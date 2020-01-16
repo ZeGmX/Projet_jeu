@@ -9,7 +9,7 @@ class GameObject:
 	This is a base game object, suitable for subclassing or wrapping fish.
 	'''
 
-	def __init__(self, x, y, deltax, deltay, shape, color):
+	def __init__(self, x, y, deltax, deltay, shape, color, static=False):
 		'''
 		Instantiates a game object at position (x, y) with the
 		given shape and color, to move by (deltax, deltay) each
@@ -77,7 +77,7 @@ class GameObject:
 		Returns a Boolean value: True (static, unmoving object), or
 		False (the default, a moving object).
 		'''
-		return False
+		return self.static
 
 	def isoob(self):
 		'''
