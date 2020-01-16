@@ -61,8 +61,8 @@ class Bullet(engine.GameObject) :
         self.x += self.speed * math.cos(math.radians(180 - self.angle))
         self.y -= self.speed * math.sin(math.radians(180 - self.angle))
 
-        if shapes.collide_round_round(self, rocket) :
-            rocket.losealife()
+        if shapes.collide_round_round(self, game.rocket) :
+            game.rocket.losealife()
             self.shape = 'whitebullet'
             engine.del_obj(self)
 

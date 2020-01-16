@@ -22,6 +22,7 @@ class GameObject:
 		self.deltax = deltax
 		self.deltay = deltay
 		self.age = 0
+		self.static = static
 		self.id = self.draw()
 
 	def heading(self):
