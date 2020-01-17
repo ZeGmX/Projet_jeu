@@ -9,13 +9,19 @@ import engine, bullets, bad_guys, rockets, shapes
 
 
 ### Global variables ###
+
+turtle.hideturtle() #These three lines are hiding the drawing at the begining
+turtle.penup()
+turtle.speed("fastest")
+
 LENGTH = 640
 level = [[[] for _ in range(5)] for _ in range(3)]
 posi = 0
 posj = 4
 shapes.makeshape()
-rocket = rockets.Rocket()
 ground = shapes.Ground(level[posi][posj])
+rocket = rockets.Rocket()
+
 
 
 
@@ -41,7 +47,7 @@ def keyboard_cb(key):
     if key == 'Right' :
         rocket.rocket_right()
     if key == 'space' :
-        engine.add_obj(NiceBullet(rocket.x, rocket.y, 90 + rocket.angle))
+        engine.add_obj(bullets.NiceBullet(rocket.x, rocket.y, 90 + rocket.angle))
 
 """
     if key == 'm':
@@ -58,7 +64,7 @@ def load():
     engine.del_obj(ground)
     ground = shapes.Ground(level[posi][posj])
     for i in range(3):
-        for j in range(5):
+        for j in range(5):  #Maybe record the old i, j ? TODO
             if i != posi or j != posj:
                 for (door, _, _) in shapes.Door.ldoor[i][j]:
                     engine.del_obj(door)
