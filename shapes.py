@@ -12,7 +12,6 @@ class Ground(engine.GameObject):
         turtle.register_shape('ground', ground)
         super().__init__(0, 0, 0, 0, 'ground', 'black', True) #True beacause static objects
 
-
 class Door(engine.GameObject):
     ldoor = bullets = [[[] for _ in range(5)] for _ in range(3)]
     doorsopened = 0
@@ -27,7 +26,7 @@ class Door(engine.GameObject):
 
     def dooropening(i, j, picked, opened, xptactiv, yptactiv, xmvt, ymvt, proximity=100, doorindex=0, keyindex=0):
         if Key.pickedupkeys == picked:
-            if Door.doorsopened == opened and game.posi == i and game.posj == j and abs(game.rocket.x - xptactiv) < proximity and abs(game.rocket.y - yptactiv) < proximity:
+            if Door.doorsopened == opened and game.Game.posi == i and game.Game.posj == j and abs(game.Game.rocket.x - xptactiv) < proximity and abs(game.Game.rocket.y - yptactiv) < proximity:
                 (door, x, y) = Door.ldoor[i][j][doorindex]
                 key = Key.lkey[i][j][keyindex]
                 if abs(door.x) < 400 and abs(door.y) < 400:
@@ -54,7 +53,7 @@ class Key(engine.GameObject):
         engine.del_obj(self)
 
     def pickupkey(i, j, picked, newi, newj, newx, newy, keyindex=0):
-        if Key.pickedupkeys == picked and game.posi == i and game.posj == j and game.rocket.speed == rockets.Rocket.gravity == 0:
+        if Key.pickedupkeys == picked and game.Game.posi == i and game.Game.posj == j and game.Game.rocket.landed == True:
             Key.pickedupkeys += 1
             game.banner('Key collected')
             key = Key.lkey[i][j][keyindex]
@@ -64,6 +63,15 @@ class Key(engine.GameObject):
                 Key.lkey[i][j].remove(key)
                 Key.lkey[newi][newj].append(key)
                 engine.del_obj(key)
+
+
+
+
+
+
+
+
+
 
 
 
@@ -97,7 +105,7 @@ def collide_round_round(round1, round2) :
 
 def collide_door(roundobj):
     "Checks if a round objects collides with a door"
-    for (door, x, y) in Door.ldoor[game.posi][game.posj]:
+    for (door, x, y) in Door.ldoor[game.Game.posi][game.Game.posj]:
         if x == 0 and abs(door.y - roundobj.y) < roundobj.radius + 40 and abs(door.x - roundobj.x) < 100 + roundobj.radius:    #40 = half width of the door, 100 = half height
             return True
         elif y == 0 and abs(x - roundobj.x) < roundobj.radius + 40 and abs(door.y - roundobj.y) < 100 + roundobj.radius:
@@ -107,7 +115,7 @@ def collide_door(roundobj):
 def collide_round_poly(roundobj, poly):
     "Checks if a round object collides with a polygon"
     for i in range(len(poly)):
-        x, y = game.LENGTH, game.LENGTH
+        x, y = game.Game.LENGTH, game.Game.LENGTH
         x1, y1 = poly[i]
         x2, y2 = poly[(i + 1) % len(poly)]
         if x1 == x2:
@@ -130,12 +138,12 @@ def collide_round_poly(roundobj, poly):
 def collide_gnd(roundobj):
     "Checks if a round objects collides with the ground"
     res = False
-    for poly in game.ground.poly:
+    for poly in game.Game.ground.poly:
         res = res or collide_round_poly(roundobj, poly)
     return res
 
 def makeshape():
-    level = game.level
+    level = game.Game.level
 
     rocket = turtle.Shape("compound")
     body = ((15,0), (25.61, -10.61), (25.61, -55.61), (0, -34.5), (-25.61, -55.61), (-25.61, -10.61), (-15.5, 0))

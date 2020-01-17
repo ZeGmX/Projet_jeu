@@ -18,10 +18,13 @@ class Rocket(engine.GameObject):
     debuginit = 0
 
     def __init__(self):
+
         self.speed = 0  #Turn this into a vector ?
         self.angle = 90
         self.lives = Rocket.NBLIVES
         self.radius = Rocket.radius
+        self.landed = False
+        #engine.GameObject.__init__(self, 0, 0, 0, 0, Rocket.skin, 'black')
         super().__init__(0, 0, 0, 0, Rocket.skin, 'black')
 
     def heading(self):
@@ -33,15 +36,18 @@ class Rocket(engine.GameObject):
         self.shape = Rocket.skin + " powered"
         Rocket.countdown = 20
         Rocket.gravity = max(0, Rocket.gravity - 1)
+        self.landed = False
 
     def rocket_left(self):
         self.angle += 30
+        self.landed = False
 
     def rocket_right(self):
         self.angle -= 30
+        self.landed = False
 
     def move(self):
-        #global  countdown, gravity
+
         game.gameplay(self)
 
         self.x += self.speed * math.cos(math.radians(180 - self.angle))
@@ -56,23 +62,26 @@ class Rocket(engine.GameObject):
         else:
             self.shape = Rocket.skin
 
+        if not self.landed:
+            if shapes.collide_gnd(self) or shapes.collide_door(self):
+                self.losealife()
+            Lplatform = self.canland()
+            for landingpad in Lplatform:
+                if landingpad > - game.Game.LENGTH and self.y <= landingpad + Rocket.radius:
+                    if Rocket.gravity - self.speed > 1 or self.angle % 360 != 90:
+                        self.losealife()
+                    else:
+                        self.land()
 
-        Lplatform = self.canland()
-        for landingpad in Lplatform:
-            if landingpad > - game.LENGTH and self.y <= landingpad + Rocket.radius:
-                if Rocket.gravity - self.speed > 1 or self.angle % 360 != 90:
-                    self.losealife()
-                else:
-                    Rocket.gravity = 0
-                    self.speed = 0
+        else:
+            self.land()
 
-
-        if shapes.collide_gnd(self) or shapes.collide_door(self):
-            self.losealife()
-
+    def land(self):
+        Rocket.gravity = 0
+        self.speed = 0
+        self.landed = True
 
     def losealife(self):
-        #global gravity, posi, posj, ground
         if self.lives == 0:
             game.banner('Game over')
             engine.exit_engine()
@@ -85,13 +94,13 @@ class Rocket(engine.GameObject):
             self.skin = Rocket.skin
             Rocket.gravity = Rocket.GRAVITYBASE
             game.banner("Life lost, {} remaining".format(self.lives))
-            game.posi = 0
-            game.posj = 4
+            game.Game.posi = 0
+            game.Game.posj = 4
             game.load()
 
     def canland(self):
         Lplatform = []
-        for poly in game.ground.poly:
+        for poly in game.Game.ground.poly:
             tempres = False
             for i in range(len(poly)):
                 x1, y1 = poly[i]
@@ -100,32 +109,31 @@ class Rocket(engine.GameObject):
                     tempres = True
                     Lplatform.append(y1)
             if not tempres:
-                Lplatform.append(- game.LENGTH)
+                Lplatform.append(- game.Game.LENGTH)
         return Lplatform
 
 
     def isoob(self):
-        #global ground, posi, posj, debuginit, bosshere
         if super().isoob():
             if self.y < -300:
-                game.posi += 1
+                game.Game.posi += 1
                 self.y = 280
             elif self.y > 300:
-                game.posi -= 1
+                game.Game.posi -= 1
                 self.y = -280
             elif self.x < -300:
-                game.posj -= 1
+                game.Game.posj -= 1
                 self.x = 280
             elif self.x > 300:
-                game.posj += 1
+                game.Game.posj += 1
                 self.x = -280
             game.load()
 
-        #elif Rocket.debuginit < 2:         #Weird problems when first loading
-        for (door , _, _) in shapes.Door.ldoor[game.posi][game.posj]:
-            engine.add_obj(door)
-        for key in shapes.Key.lkey[game.posi][game.posj]:
-            engine.add_obj(key)
-            #Rocket.debuginit += 1
+        elif Rocket.debuginit < 2:         #Weird problems when first loading
+            for (door , _, _) in shapes.Door.ldoor[game.Game.posi][game.Game.posj]:
+                engine.add_obj(door)
+            for key in shapes.Key.lkey[game.Game.posi][game.Game.posj]:
+                engine.add_obj(key)
+                Rocket.debuginit += 1
 
         return False

@@ -11,7 +11,7 @@ class GameObject:
 
 	def __init__(self, x, y, deltax, deltay, shape, color, static=False):
 		'''
-		Instantiates a game object at position (x, y) with the
+		Instantiates a game object at Game.position (x, y) with the
 		given shape and color, to move by (deltax, deltay) each
 		time step.
 		'''
@@ -68,7 +68,7 @@ class GameObject:
 
 	def move(self):
 		'''
-		Invoked to move the object's (x, y) position on each time step.
+		Invoked to move the object's (x, y) Game.position on each time step.
 		'''
 		self.x = self.x + self.deltax
 		self.y = self.y + self.deltay
@@ -84,7 +84,7 @@ class GameObject:
 		'''
 		Returns True/False to indicate if the object is out of bounds
 		or not.  By default, the screen height/width and the object's
-		(x, y) position are used to determine this.
+		(x, y) Game.position are used to determine this.
 		'''
 		# out of bounds?
 		if self.x < MINX or self.x > MAXX or \

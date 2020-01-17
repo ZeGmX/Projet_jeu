@@ -17,12 +17,12 @@ class BadGuy(engine.GameObject) :
             self.seuil = 150
             self.countdown = 0
             enplus = 0
-            if self.x < game.rocket.x :
+            if self.x < game.Game.rocket.x :
                 enplus = 180
-            if self.x == game.rocket.x :
+            if self.x == game.Game.rocket.x :
                 angle = 0
             else :
-                angle = enplus +  math.degrees(math.atan((self.y - game.rocket.y) / (self.x - game.rocket.x)))
+                angle = enplus +  math.degrees(math.atan((self.y - game.Game.rocket.y) / (self.x - game.Game.rocket.x)))
             engine.add_obj(bullets.Bullet(self.x, self.y, angle))
 
     def create_badguys():
@@ -50,16 +50,17 @@ class Boss(engine.GameObject) :
         self.radius = 100
         super().__init__(x, y, 0, 0, 'boss', 'black', True) #True because it is static
 
+
     def move(self) :
         self.countdown += 1
         if self.countdown > self.seuil:
             self.seuil = random.randrange(50, 70)
             self.countdown = 0
             enplus = 0
-            if self.x < game.rocket.x:
+            if self.x < game.Game.rocket.x:
                 enplus = 180
-            if self.x == game.rocket.x:
+            if self.x == game.Game.rocket.x:
                 angle = 0
             else:
-                angle = enplus +  math.degrees(math.atan((self.y - game.rocket.y) / (self.x - game.rocket.x)))
+                angle = enplus +  math.degrees(math.atan((self.y - game.Game.rocket.y) / (self.x - game.Game.rocket.x)))
             engine.add_obj(Bullet(self.x, self.y, angle))
