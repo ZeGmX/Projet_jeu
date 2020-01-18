@@ -25,21 +25,22 @@ class Door(engine.GameObject):
         return self.angle
 
     def dooropening(i, j, picked, opened, xptactiv, yptactiv, xmvt, ymvt, proximity=100, doorindex=0, keyindex=0):
-        if Key.pickedupkeys == picked:
-            if Door.doorsopened == opened and game.Game.posi == i and game.Game.posj == j and abs(game.Game.rocket.x - xptactiv) < proximity and abs(game.Game.rocket.y - yptactiv) < proximity:
-                (door, x, y) = Door.ldoor[i][j][doorindex]
-                key = Key.lkey[i][j][keyindex]
-                if abs(door.x) < 400 and abs(door.y) < 400:
-                    door.x += xmvt
-                    door.y += ymvt
-                    key.x += xmvt
-                    key.y += ymvt
-                else:
-                    Door.ldoor[i][j].remove((door, x, y))
-                    engine.del_obj(door)
-                    Key.lkey[i][j].remove(key)
-                    engine.del_obj(key)
-                    Door.doorsopened += 1
+        if not game.Game.pause:
+            if Key.pickedupkeys == picked:
+                if Door.doorsopened == opened and game.Game.posi == i and game.Game.posj == j and abs(game.Game.rocket.x - xptactiv) < proximity and abs(game.Game.rocket.y - yptactiv) < proximity:
+                    (door, x, y) = Door.ldoor[i][j][doorindex]
+                    key = Key.lkey[i][j][keyindex]
+                    if abs(door.x) < 400 and abs(door.y) < 400:
+                        door.x += xmvt
+                        door.y += ymvt
+                        key.x += xmvt
+                        key.y += ymvt
+                    else:
+                        Door.ldoor[i][j].remove((door, x, y))
+                        engine.del_obj(door)
+                        Key.lkey[i][j].remove(key)
+                        engine.del_obj(key)
+                        Door.doorsopened += 1
 
 
 class Key(engine.GameObject):
@@ -98,9 +99,9 @@ def make_circle(point, radius):
     turtle.end_poly()
     return turtle.get_poly()
 
-def collide_round_round(round1, round2) :
+def collide_round_round(round1, round2):
     "Checks if two round objects collide"
-    if math.sqrt( (round1.x - round2.x) ** 2 + (round1.y - round2.y) ** 2) < round2.radius + round1.radius :
+    if math.sqrt( (round1.x - round2.x) ** 2 + (round1.y - round2.y) ** 2) < round2.radius + round1.radius:
         return True
 
 def collide_door(roundobj):

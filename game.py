@@ -3,26 +3,32 @@ import shapes, bad_guys, rockets, game, engine, bullets
 
 
 class Game:
-    LENGTH = 640
+    LENGTH = 640 #size of the window
     level = [[[] for _ in range(5)] for _ in range(3)]
     posi = 0
     posj = 4
+    pause = False
     ground = ""
     rocket = ""
     boss = ""
 
     def init_rockets():
+        assert Game.rocket == "", "rocket already initialized"
         print("Initializing the rocket...")
         Game.rocket = rockets.Rocket()
 
     def init_ground():
+        assert Game.ground == "", "ground already initialized"
         print("Initializing the ground...")
         Game.ground = shapes.Ground(Game.level[Game.posi][Game.posj])
 
 
     def init_boss():
+        assert Game.boss == "", "boss already initialized"
         print("Initializing the Boss...")
         Game.boss = bad_guys.Boss(30, 0)
+
+
 
 
 
@@ -62,7 +68,7 @@ def load():
     engine.del_obj(Game.ground)
     Game.ground = shapes.Ground(Game.level[Game.posi][Game.posj])
     for i in range(3):
-        for j in range(5):  #Maybe record the old i, j ? TODO
+        for j in range(5):
             if i != Game.posi or j != Game.posj:
                 for (door, _, _) in shapes.Door.ldoor[i][j]:
                     engine.del_obj(door)
@@ -74,13 +80,13 @@ def load():
         engine.del_obj(bullet)
     bullets.bullets = []
 
-    for _ in range(3):
-        for badguy in bad_guys.BadGuy.badguys[Game.posi][Game.posj]:
-            engine.add_obj(badguy)
-        for (door , _, _) in shapes.Door.ldoor[Game.posi][Game.posj]:
-            engine.add_obj(door)
-        for key in shapes.Key.lkey[Game.posi][Game.posj]:
-            engine.add_obj(key)
+    #for _ in range(3):
+    for badguy in bad_guys.BadGuy.badguys[Game.posi][Game.posj]:
+        engine.add_obj(badguy)
+    for (door , _, _) in shapes.Door.ldoor[Game.posi][Game.posj]:
+        engine.add_obj(door)
+    for key in shapes.Key.lkey[Game.posi][Game.posj]:
+        engine.add_obj(key)
 
 
 

@@ -1,6 +1,5 @@
-import time
-import turtle
-import random
+import time, turtle, random
+
 
 # base game object
 
@@ -100,6 +99,7 @@ class GameObject:
 		invokes methods to perform the move and update.  Moving
 		out of bounds causes the object to be deleted from the game.
 		'''
+		#if not game.Game.pause:
 		self.age = self.age + 1
 		if not self.isstatic():
 			self.move()
