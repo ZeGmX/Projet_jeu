@@ -31,10 +31,6 @@ def keyboard_cb(key):
 
 
 
-
-
-
-print(1)
 if __name__ == '__main__':
 
     turtle.hideturtle() #These three lines are hiding the drawing at the begining

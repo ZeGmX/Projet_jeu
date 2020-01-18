@@ -31,12 +31,11 @@ class NiceBullet(engine.GameObject) :
             self.shape = 'whitebullet'
             engine.del_obj(self)
             bullets.remove(self)
-            if game.Game.boss.life > 0:
-                game.Game.boss.life -= 1
-            elif bad_guys.Boss.bossbeaten == 0:
+            if bad_guys.Boss.bossbeaten == 0:
                 engine.del_obj(game.Game.boss)
                 game.banner('Boss defeated')
                 bad_guys.Boss.bossbeaten
+            game.Game.boss.life -= 1
 
         if shapes.collide_gnd(self) :
             self.shape = 'whitebullet'

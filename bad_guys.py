@@ -1,5 +1,5 @@
-import engine
-import bullets
+import math, random
+import engine, bullets, game
 
 
 class BadGuy(engine.GameObject) :
@@ -9,7 +9,7 @@ class BadGuy(engine.GameObject) :
         self.countdown = 0
         self.seuil = 150
         self.radius = 20
-        super().__init__(x, y, 0, 0, 'badguy', 'black', True) #True because it is static
+        super().__init__(x, y, 0, 0, 'badguy', 'black')
 
     def move(self) :
         self.countdown += 1
@@ -48,7 +48,7 @@ class Boss(engine.GameObject) :
         self.seuil = 70
         self.life = 80
         self.radius = 100
-        super().__init__(x, y, 0, 0, 'boss', 'black', True) #True because it is static
+        super().__init__(x, y, 0, 0, 'boss', 'black')
 
 
     def move(self) :
@@ -63,4 +63,4 @@ class Boss(engine.GameObject) :
                 angle = 0
             else:
                 angle = enplus +  math.degrees(math.atan((self.y - game.Game.rocket.y) / (self.x - game.Game.rocket.x)))
-            engine.add_obj(Bullet(self.x, self.y, angle))
+            engine.add_obj(bullets.Bullet(self.x, self.y, angle))
