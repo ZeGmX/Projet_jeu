@@ -1,7 +1,6 @@
-import engine
 import game
 import math
-import shapes
+import engine, shapes, bad_guys
 
 
 class Rocket(engine.GameObject):
@@ -94,6 +93,8 @@ class Rocket(engine.GameObject):
             self.y = 0
             self.skin = Rocket.skin
             game.banner("Life lost, {} remaining".format(self.lives))
+            if game.Game.posi == 2 and game.Game.posj == 3 and not bad_guys.Boss.bossbeaten:
+                engine.del_obj(game.Game.boss)
             game.Game.posi = 0
             game.Game.posj = 4
             game.load()

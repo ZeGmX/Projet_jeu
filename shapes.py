@@ -46,7 +46,7 @@ class Door(engine.GameObject):
 class Key(engine.GameObject):
     "Key for the doors"
 
-    lkey = [[[] for _ in range(5)] for _ in range(5)]
+    lkey = [[[] for _ in range(5)] for _ in range(3)]
     pickedupkeys = 0
 
     def __init__(self, x, y, color):

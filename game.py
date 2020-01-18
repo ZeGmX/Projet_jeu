@@ -62,8 +62,6 @@ def gameplay(self):
 
 
 
-
-
 def load():
     engine.del_obj(Game.ground)
     Game.ground = shapes.Ground(Game.level[Game.posi][Game.posj])
@@ -76,6 +74,7 @@ def load():
                     engine.del_obj(key)
                 for badguy in bad_guys.BadGuy.badguys[i][j]:
                     engine.del_obj(badguy)
+
     for bullet in bullets.bullets:
         engine.del_obj(bullet)
     bullets.bullets = []
@@ -88,13 +87,9 @@ def load():
     for key in shapes.Key.lkey[Game.posi][Game.posj]:
         engine.add_obj(key)
 
-
-
-    if Game.posi == 2 and Game.posj == 3 and bad_guys.Boss.bossbeaten == 0 and Game.boss.life > 0 and bad_guys.Boss.bosshere < 2:
+    if Game.posi == 2 and Game.posj == 3 and not bad_guys.Boss.bossbeaten and Game.boss.life > 0:
         engine.add_obj(Game.boss)
-        bad_guys.Boss.bosshere += 1
-    if (Game.posi != 2 or Game.posj != 3)  and bad_guys.Boss.bossbeaten == 0:
-        bad_guys.Boss.bosshere = 0
+
 
 
 def banner(msg):

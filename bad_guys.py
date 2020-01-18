@@ -42,8 +42,7 @@ class BadGuy(engine.GameObject):
 
 
 class Boss(engine.GameObject):
-    bossbeaten = 0
-    bosshere = 0
+    bossbeaten = False
 
     def __init__(self,x ,y):
         self.countdown = 0
@@ -61,9 +60,9 @@ class Boss(engine.GameObject):
                 self.countdown = 0
                 angle_to_be_added = 0   #Computing the direction to fire the bullet
                 if self.x < game.Game.rocket.x:
-                    enplus = 180
-                    """if self.x == game.Game.rocket.x:
-                    angle = 0"""
+                    angle_to_be_added = 180
+                if self.x == game.Game.rocket.x:
+                    angle = 0
                 else:
                     angle = angle_to_be_added +  math.degrees(math.atan((self.y - game.Game.rocket.y) / (self.x - game.Game.rocket.x)))
                 engine.add_obj(bullets.Bullet(self.x, self.y, angle, False))

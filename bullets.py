@@ -30,14 +30,14 @@ class Bullet(engine.GameObject):
                         engine.del_obj(self)
                         bullets.remove(self)
 
-                if game.Game.posi == 2 and game.Game.posj == 3 and shapes.collide_round_round(self, game.Game.boss):
+                if game.Game.posi == 2 and game.Game.posj == 3 and shapes.collide_round_round(self, game.Game.boss) and not game.Game.boss.bossbeaten:
                     self.shape = 'whitebullet'
                     engine.del_obj(self)
                     bullets.remove(self)
-                    if bad_guys.Boss.bossbeaten == 0:
+                    if bad_guys.Boss.bossbeaten == 0 and game.Game.boss.life == 0:
                         engine.del_obj(game.Game.boss)
                         game.banner('Boss defeated')
-                        bad_guys.Boss.bossbeaten
+                        bad_guys.Boss.bossbeaten = 1
                     game.Game.boss.life -= 1
 
 

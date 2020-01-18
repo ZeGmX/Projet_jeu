@@ -1,7 +1,7 @@
 # A nice game.Game
 
 ### Importations ###
-import turtle
+import turtle, sys
 import engine, bullets, bad_guys, rockets, shapes, game
 
 ### Functions ###
@@ -25,6 +25,37 @@ def keyboard_cb(key):
         if key == 'space':
             engine.add_obj(bullets.Bullet(game.Game.rocket.x, game.Game.rocket.y, 90 + game.Game.rocket.angle, True))
 
+def cheat():
+    "Pour un debug plus simple"
+    if len(sys.argv) > 1 and sys.argv[1] == '0':
+        print("Version avec cheat")
+        key_order = [(0, 4), (1, 4), (0, 0), (0, 1), (2, 3)]
+        door_order = [(0, 4), (1, 1), (1, 2), (2, 2), (2, 3)]
+        game.Game.posi = 2
+        game.Game.posj = 2
+        game.Game.rocket.x = 0
+        game.Game.rocket.y = 0
+        shapes.Door.doorsopened = 4
+        shapes.Key.pickedupkeys = 4
+        bad_guys.Boss.bossbeaten = True
+
+        for door_index in range(shapes.Door.doorsopened):
+            i, j = door_order[door_index]
+            (door, x, y) = shapes.Door.ldoor[i][j][0]
+            engine.del_obj(door)
+            shapes.Door.ldoor[i][j].remove((door, x, y))
+
+        for key_index in range(shapes.Key.pickedupkeys):
+            i, j = key_order[key_index]
+            key = shapes.Key.lkey[i][j][0]
+            shapes.Key.lkey[i][j].remove(key)
+            if key_index == shapes.Key.pickedupkeys - 1 == shapes.Door.doorsopened:
+                newi, newj = door_order[shapes.Key.pickedupkeys - 1]
+                shapes.Key.lkey[newi][newj].append(key)
+            else:
+                engine.del_obj(key)
+    else:
+        print("Version sans cheat")
 
 
 if __name__ == '__main__':
@@ -48,6 +79,7 @@ if __name__ == '__main__':
     engine.add_obj(game.Game.ground)
     engine.add_obj(game.Game.rocket)
 
+    cheat()
     engine.set_keyboard_handler(keyboard_cb)
     game.load()
     engine.engine()
