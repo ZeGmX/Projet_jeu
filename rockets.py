@@ -4,8 +4,8 @@ import engine, shapes, bad_guys
 
 
 class Rocket(engine.GameObject):
-    SPEEDBOOST = 1
-    SPEEDDECREASESTEP = 0.05
+    SPEEDBOOST = 0.6
+    SPEEDDECREASESTEP = 0.02
     GRAVITYSTEP = 0.02
     NBLIVES = 3
     skin = 'bird'   #rocket or bird
@@ -52,11 +52,11 @@ class Rocket(engine.GameObject):
             self.speed[1] += Rocket.GRAVITYSTEP
 
             if self.speed[1] < 0:  #Natural slowing down - friction
-                self.speed[1] += Rocket.SPEEDDECREASESTEP
+                self.speed[1] += Rocket.SPEEDDECREASESTEP / 2
             if self.speed[0] < 0:
-                self.speed[0] += Rocket.SPEEDDECREASESTEP / 2.5  #less friction horizontally
+                self.speed[0] += Rocket.SPEEDDECREASESTEP  #less friction horizontally
             elif self.speed[0] > 0:
-                self.speed[0] -= Rocket.SPEEDDECREASESTEP / 2.5
+                self.speed[0] -= Rocket.SPEEDDECREASESTEP
 
             if self.countdown > 0: #display bac the unpowered skin
                 self.countdown -= 1
@@ -69,7 +69,7 @@ class Rocket(engine.GameObject):
                 Lplatform = self.canland()
                 for landingpad in Lplatform:
                     if landingpad > - game.Game.LENGTH and self.y <= landingpad + Rocket.radius:
-                        if abs(self.speed[1]) > 1 or self.angle % 360 != 90:
+                        if abs(self.speed[1]) > 0.8 or self.angle % 360 != 90:
                             self.losealife()
                         else:
                             self.land()
