@@ -41,6 +41,7 @@ class Door(engine.GameObject):
                         Key.lkey[i][j].remove(key)
                         engine.del_obj(key)
                         Door.doorsopened += 1
+                        game.Stats.points += game.Stats.POINTS_PER_DOOR_OPENED
 
 
 class Key(engine.GameObject):
@@ -56,6 +57,7 @@ class Key(engine.GameObject):
     def pickupkey(i, j, picked, newi, newj, newx, newy, keyindex=0):
         if Key.pickedupkeys == picked and game.Game.posi == i and game.Game.posj == j and game.Game.rocket.landed == True:
             Key.pickedupkeys += 1
+            game.Stats.points += game.Stats.POINTS_PER_KEY_PICKED
             game.banner('Key collected')
             key = Key.lkey[i][j][keyindex]
             key.x = newx
@@ -64,6 +66,7 @@ class Key(engine.GameObject):
                 Key.lkey[i][j].remove(key)
                 Key.lkey[newi][newj].append(key)
                 engine.del_obj(key)
+
 
 
 

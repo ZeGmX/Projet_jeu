@@ -9,8 +9,11 @@ ajout de lore
 ajout d'un tutoriel
 menu au début -> tutoriel/jeu, choix du skin, exit
 musique ?
-compteur de points / stats balles tirées-touchées-...
 trouver un nom pour le jeu
+cheat -> invincibilité
+fuel limité - station de recharge -> idem avec les balles ?
+power ups ?
+afficher le compteur de point en direct
 
 
 bugs:
@@ -30,3 +33,4 @@ vitesse -> vecteur
 fusionner les classes de bullets -> ajout d'un attribut "nice"
 commenter le code
 fct cheat pour debug plus facilement
+Ajout de stats

@@ -29,6 +29,8 @@ class Bullet(engine.GameObject):
                         self.shape = 'whitebullet'
                         engine.del_obj(self)
                         bullets.remove(self)
+                        game.Stats.bullets_hit += 1
+                        game.Stats.points += game.Stats.POINTS_PER_BAD_GUY
 
                 if game.Game.posi == 2 and game.Game.posj == 3 and shapes.collide_round_round(self, game.Game.boss) and not game.Game.boss.bossbeaten:
                     self.shape = 'whitebullet'
@@ -39,6 +41,8 @@ class Bullet(engine.GameObject):
                         game.banner('Boss defeated')
                         bad_guys.Boss.bossbeaten = 1
                     game.Game.boss.life -= 1
+                    game.Stats.bullets_hit += 1
+                    game.Stats.points += game.Stats.POINTS_PER_HIT_BOSS
 
 
 

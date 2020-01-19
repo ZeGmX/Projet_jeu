@@ -10,11 +10,12 @@ import engine, bullets, bad_guys, rockets, shapes, game
 
 def keyboard_cb(key):
     "Gestion du clavier"
-
+    game.Stats.key_pressed += 1
     if key == 'Return': #Enter
         game.Game.pause = not game.Game.pause
     if key == 'Escape':
         engine.exit_engine()
+        game.Stats.display_stats()
     if not game.Game.pause:
         if key == 'Up' or key == 'z':
             game.Game.rocket.rocket_up()
@@ -24,6 +25,7 @@ def keyboard_cb(key):
             game.Game.rocket.rocket_right()
         if key == 'space':
             engine.add_obj(bullets.Bullet(game.Game.rocket.x, game.Game.rocket.y, 90 + game.Game.rocket.angle, True))
+            game.Stats.bullets_fired += 1
 
 def cheat():
     "Pour un debug plus simple"

@@ -29,8 +29,36 @@ class Game:
         Game.boss = bad_guys.Boss(30, 0)
 
 
+class Stats:
+    POINTS_PER_BAD_GUY = 100
+    POINTS_PER_HIT_BOSS = 20
+    POINTS_PER_KEY_PICKED = 50
+    POINTS_PER_DOOR_OPENED = 50
+    t_init = time.time()
+    t_end = 0
+    bullets_fired = 0
+    bullets_hit = 0
+    key_pressed = 0
+    points = 0
 
-
+    def display_stats():
+        Stats.t_end = time.time()
+        dt = int(Stats.t_end - Stats.t_init)
+        hours = dt // 3600
+        dt = dt % 3600
+        mins = dt // 60
+        seconds = dt % 60
+        print("**********Statistics**********")
+        print(f"Points : {Stats.points}")
+        print(f"Time played : {hours}h {mins}min {seconds}s")
+        print(f"Bullets fired : {Stats.bullets_fired}")
+        print(f"Buletts hit : {Stats.bullets_hit}")
+        print("Accuracy : {}%".format(Stats.bullets_hit / Stats.bullets_fired * 100 if Stats.bullets_fired > 0 else "NaN"))
+        print(f"Number of keys pressed : {Stats.key_pressed}")
+        print(f"Lives left : {Game.rocket.lives}")
+        print(f"Keys picked : {shapes.Key.pickedupkeys}")
+        print(f"Doors opened : {shapes.Door.doorsopened}")
+        print("*" * 30)
 
 
 def gameplay(self):
@@ -59,6 +87,7 @@ def gameplay(self):
     if Game.posi == 2 and Game.posj == 4:
         banner('You won!')
         engine.exit_engine()
+        Stats.display_stats()
 
 
 

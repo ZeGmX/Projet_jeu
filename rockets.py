@@ -85,6 +85,7 @@ class Rocket(engine.GameObject):
         if self.lives == 0:
             game.banner('Game over')
             engine.exit_engine()
+            game.Stats.display_stats()
         else:
             self.lives -= 1
             self.speed[0] = self.speed[1] = 0
