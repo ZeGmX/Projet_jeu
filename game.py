@@ -4,13 +4,32 @@ import shapes, bad_guys, rockets, game, engine, bullets
 
 class Game:
     LENGTH = 640 #size of the window
-    level = [[[] for _ in range(5)] for _ in range(3)]
+
+    level = [] #these will be initialized using the file Files/lvl{i}/lvl.txt
     posi = 0
-    posj = 4
-    pause = False
-    ground = ""
+    posj = 0
+    length = 0
+    height = 0
+
+    pause = False #these have no other initilization
+    freeze_spawn = True
+
+    ground = "" #these have their own initialization function
     rocket = ""
     boss = ""
+
+    def init_game(level="lvl1"):
+        with open("Files/" + level + "/lvl.txt", 'r') as f:
+            lines = f.readlines()
+            assert len(lines) == 3, "Unconsistent file: Files" + level + "/lvl.txt"
+            line_length = lines[0].split()
+            line_height = lines[1].split()
+            line_spawn = lines[2].split()
+            Game.length = int(line_length[1])
+            Game.height = int(line_height[1])
+            Game.level = [[[] for _ in range(Game.length)] for _ in range(Game.height)]
+            Game.posi = int(line_spawn[1])
+            Game.posj = int(line_spawn[2])
 
     def init_rockets():
         assert Game.rocket == "", "rocket already initialized"
@@ -56,24 +75,28 @@ class Stats:
         print("Accuracy : {}%".format(Stats.bullets_hit / Stats.bullets_fired * 100 if Stats.bullets_fired > 0 else "NaN"))
         print(f"Number of keys pressed : {Stats.key_pressed}")
         print(f"Lives left : {Game.rocket.lives}")
-        print(f"Keys picked : {shapes.Key.pickedupkeys}")
+        print(f"Keys picked : {len(shapes.Key.pickedupkeys)}")
         print(f"Doors opened : {shapes.Door.doorsopened}")
         print("*" * 30)
 
 
 def gameplay(self):
-    shapes.Key.pickupkey(0, 4, 0, 0, 4, -268, 0)
-    shapes.Door.dooropening(0, 4, 1, 0, -300, 0, 0, 10)
+    for door in shapes.Door.ldoor[Game.posi][Game.posj]:
+        door.dooropening()
+    for key in shapes.Key.lkey[Game.posi][Game.posj]:
+        key.pickupkey()
+    """shapes.Key.pickupkey(0, 4, 0, 0, 4, -268, 0)
+    shapes.Door.dooropening(0, 4, 1, 0, -300, 0)
     shapes.Key.pickupkey(1, 4, 1, 1, 2, -268, 0)
-    shapes.Door.dooropening(1, 2, 2, 1, -300, 0, 0, 10)
+    shapes.Door.dooropening(1, 2, 2, 1, -300, 0)
     shapes.Key.pickupkey(0, 0, 2, 1, 1, 0, 268)
-    shapes.Door.dooropening(1, 1, 3, 2, 0, 300, 10, 0)
+    shapes.Door.dooropening(1, 1, 3, 2, 0, 300)
     shapes.Key.pickupkey(0, 1, 3, 2, 2, 268, 0)
-    shapes.Door.dooropening(2, 2, 4, 3, 300, 0, 0, 10)
+    shapes.Door.dooropening(2, 2, 4, 3, 300, 0)"""
 
     if bad_guys.Boss.bossbeaten == 1:
         if shapes.Door.ldoor[2][3] != []:
-            (door, x, y) = shapes.Door.ldoor[2][3][0]
+            door = shapes.Door.ldoor[2][3][0]
             key = shapes.Key.lkey[2][3][0]
             if door.y < 400:
                 door.y += 10
@@ -81,7 +104,7 @@ def gameplay(self):
             else:
                 engine.del_obj(door)
                 engine.del_obj(key)
-                shapes.Door.ldoor[2][3].remove((door, x, y))
+                shapes.Door.ldoor[2][3].remove(door)
                 shapes.Key.lkey[2][3].remove(key)
 
     if Game.posi == 2 and Game.posj == 4:
@@ -97,7 +120,7 @@ def load():
     for i in range(3):
         for j in range(5):
             if i != Game.posi or j != Game.posj:
-                for (door, _, _) in shapes.Door.ldoor[i][j]:
+                for door in shapes.Door.ldoor[i][j]:
                     engine.del_obj(door)
                 for key in shapes.Key.lkey[i][j]:
                     engine.del_obj(key)
@@ -111,7 +134,7 @@ def load():
     #for _ in range(3):
     for badguy in bad_guys.BadGuy.badguys[Game.posi][Game.posj]:
         engine.add_obj(badguy)
-    for (door , _, _) in shapes.Door.ldoor[Game.posi][Game.posj]:
+    for door in shapes.Door.ldoor[Game.posi][Game.posj]:
         engine.add_obj(door)
     for key in shapes.Key.lkey[Game.posi][Game.posj]:
         engine.add_obj(key)

@@ -1,5 +1,4 @@
-import turtle
-import math
+import turtle, math
 import engine, game, rockets
 
 class Ground(engine.GameObject):
@@ -12,60 +11,109 @@ class Ground(engine.GameObject):
         turtle.register_shape('ground', ground)
         super().__init__(0, 0, 0, 0, 'ground', 'black', True) #True beacause static objects
 
+
 class Door(engine.GameObject):
-    ldoor = bullets = [[[] for _ in range(5)] for _ in range(3)]
+    ldoor = []
+
     doorsopened = 0
 
-    def __init__(self, x, y, color, angle=0):
+    def __init__(self, x, y, color, keys_required=[], angle=0):
         self.angle = angle
+        self.x_init = x
+        self.y_init = y
+        self.keys_required = keys_required[:]
         super().__init__(x, y, 0, 0, 'door', color)
         engine.del_obj(self)
 
     def heading(self):
         return self.angle
 
-    def dooropening(i, j, picked, opened, xptactiv, yptactiv, xmvt, ymvt, proximity=100, doorindex=0, keyindex=0):
-        if not game.Game.pause:
-            if Key.pickedupkeys == picked:
-                if Door.doorsopened == opened and game.Game.posi == i and game.Game.posj == j and abs(game.Game.rocket.x - xptactiv) < proximity and abs(game.Game.rocket.y - yptactiv) < proximity:
-                    (door, x, y) = Door.ldoor[i][j][doorindex]
-                    key = Key.lkey[i][j][keyindex]
-                    if abs(door.x) < 400 and abs(door.y) < 400:
-                        door.x += xmvt
-                        door.y += ymvt
-                        key.x += xmvt
-                        key.y += ymvt
-                    else:
-                        Door.ldoor[i][j].remove((door, x, y))
-                        engine.del_obj(door)
-                        Key.lkey[i][j].remove(key)
-                        engine.del_obj(key)
-                        Door.doorsopened += 1
-                        game.Stats.points += game.Stats.POINTS_PER_DOOR_OPENED
+    def dooropening(self, key_index=0, proximity=100):
+        if not game.Game.pause and abs(game.Game.rocket.x - self.x_init) < proximity and abs(game.Game.rocket.y - self.y_init) < proximity:
+            got_all_keys = True
+            for key_id in self.keys_required:
+                got_all_keys = got_all_keys and key_id in Key.pickedupkeys
+            if got_all_keys:
+                key = Key.lkey[game.Game.posi][game.Game.posj][key_index]
+                xmvt = 0 if self.angle % 180 == 0 else 10
+                ymvt = 10 if self.angle % 180 == 0 else 0
+                if abs(self.x) < 400 and abs(self.y) < 400: #moving the door
+                    self.x += xmvt
+                    self.y += ymvt
+                    key.x += xmvt
+                    key.y += ymvt
+                else:   #removing the door
+                    Door.ldoor[game.Game.posi][game.Game.posj].remove(self)
+                    engine.del_obj(self)
+                    for key in Key.lkey[game.Game.posi][game.Game.posj]: #removing the keys used to open the door
+                        if key.id in self.keys_required:
+                            Key.lkey[game.Game.posi][game.Game.posj].remove(key)
+                            engine.del_obj(key)
+                    Door.doorsopened += 1
+                    game.Stats.points += game.Stats.POINTS_PER_DOOR_OPENED
+
+    def init_doors(level="lvl1"):
+        print("Initializing the doors...")
+        Door.ldoor = [[[] for _ in range(game.Game.length)] for _ in range(game.Game.height)]
+        path = "Files/" + level + "/doors.txt"
+        with open(path, 'r') as f:
+            lines = f.readlines()
+            Door.nb_doors = len(lines) - 1
+            for line in lines[1:]:
+                l = line.split()
+                posi, posj = int(l[0]), int(l[1])
+                x, y = int(l[2]), int(l[3])
+                color = l[4]
+                angle = int(l[5])
+                keys_required = l[6].split(',')
+                keys_required = [int(k) for k in keys_required]
+                Door.ldoor[posi][posj].append(Door(x, y, color, keys_required, angle))
+
 
 
 class Key(engine.GameObject):
     "Key for the doors"
 
-    lkey = [[[] for _ in range(5)] for _ in range(3)]
-    pickedupkeys = 0
+    lkey = []
 
-    def __init__(self, x, y, color):
+    pickedupkeys = []
+
+    def __init__(self, x, y, color, key_id, newi, newj, newx, newy):
+        self.key_id = key_id
+        self.newi = newi #room after pickup
+        self.newj = newj
+        self.newx = newx #coordinates after pickup
+        self.newy = newy
         super().__init__(x, y, 0, 0, 'key', color)
         engine.del_obj(self)
 
-    def pickupkey(i, j, picked, newi, newj, newx, newy, keyindex=0):
-        if Key.pickedupkeys == picked and game.Game.posi == i and game.Game.posj == j and game.Game.rocket.landed == True:
-            Key.pickedupkeys += 1
+    def init_keys(level="lvl1"):
+        print("Initializing the keys...")
+        Key.lkey = [[[] for _ in range(game.Game.length)] for _ in range(game.Game.height)]
+        path = "Files/" + level + "/keys.txt"
+        with open(path, 'r') as f:
+            lines = f.readlines()
+            for line in lines[1:]:
+                l = line.split()
+                posi, posj = int(l[0]), int(l[1])
+                x, y = int(l[2]), int(l[3])
+                color = l[4]
+                key_id = int(l[5])
+                newi, newj = int(l[6]), int(l[7])
+                newx, newy = int(l[8]), int(l[9])
+                Key.lkey[posi][posj].append(Key(x, y, color, key_id, newi, newj, newx, newy))
+
+    def pickupkey(self):
+        if game.Game.rocket.landed == True and self.key_id not in Key.pickedupkeys:
+            Key.pickedupkeys.append(self.key_id)
             game.Stats.points += game.Stats.POINTS_PER_KEY_PICKED
             game.banner('Key collected')
-            key = Key.lkey[i][j][keyindex]
-            key.x = newx
-            key.y = newy
-            if newi != i or newj != j:
-                Key.lkey[i][j].remove(key)
-                Key.lkey[newi][newj].append(key)
-                engine.del_obj(key)
+            self.x = self.newx
+            self.y = self.newy
+            if self.newi != game.Game.posi or self.newj != game.Game.posj: #the door isn"t in the same room as the key
+                Key.lkey[game.Game.posi][game.Game.posj].remove(self)
+                Key.lkey[self.newi][self.newj].append(self)
+                engine.del_obj(self)
 
 
 
@@ -79,19 +127,6 @@ class Key(engine.GameObject):
 
 
 
-
-
-def create_doors_keys():
-    Door.ldoor[0][4].append((Door(-300, 0, 'blue'), -300, 0))
-    Door.ldoor[1][1].append((Door(0, 300, 'orange', 270), 0, 300))
-    Door.ldoor[1][2].append((Door(-300, 0, 'green'), -300, 0))
-    Door.ldoor[2][2].append((Door(300, 0, 'red', 180), 300, 0))
-    Door.ldoor[2][3].append((Door(300, 0, 'gold', 180), 300, 0))
-    Key.lkey[0][4].append(Key(100, -138, 'blue'))
-    Key.lkey[1][4].append(Key(270, 105, 'green'))
-    Key.lkey[0][0].append(Key(150, -49, 'orange'))
-    Key.lkey[0][1].append(Key(-120, 163, 'red'))
-    Key.lkey[2][3].append(Key(268, 0, 'gold'))
 
 def make_circle(point, radius):
     "draw a circle centerent on point"
@@ -109,10 +144,10 @@ def collide_round_round(round1, round2):
 
 def collide_door(roundobj):
     "Checks if a round objects collides with a door"
-    for (door, x, y) in Door.ldoor[game.Game.posi][game.Game.posj]:
-        if x == 0 and abs(door.y - roundobj.y) < roundobj.radius + 40 and abs(door.x - roundobj.x) < 100 + roundobj.radius:    #40 = half width of the door, 100 = half height
+    for door in Door.ldoor[game.Game.posi][game.Game.posj]:
+        if door.x == 0 and abs(door.y - roundobj.y) < roundobj.radius + 40 and abs(door.x - roundobj.x) < 100 + roundobj.radius:    #40 = half width of the door, 100 = half height
             return True
-        elif y == 0 and abs(x - roundobj.x) < roundobj.radius + 40 and abs(door.y - roundobj.y) < 100 + roundobj.radius:
+        elif door.y == 0 and abs(door.x - roundobj.x) < roundobj.radius + 40 and abs(door.y - roundobj.y) < 100 + roundobj.radius:
             return True
     return False
 

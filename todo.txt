@@ -13,13 +13,17 @@ trouver un nom pour le jeu
 cheat -> invincibilité
 fuel limité - station de recharge -> idem avec les balles ?
 power ups ?
-afficher le compteur de point en direct
+afficher le compteur de point en direct, compteur de vie
+plusieurs clés pour une porte ? / une clé pour plusieurs portes ?
+réparer la fonction de cheat
 
 
 bugs:
   pb de passages entre 1,3 et 1,4 en bas -> changer les points
+  |-> idem entre 0,2 et 1,2 à gauche
   bullets peuvent traverser les plateformes
   pb de collision à gauche de la plateforme en 0,4
+  compte à rebours des bad_guys non remis à 0 quand on quitte une salle
 
 
 
@@ -28,9 +32,10 @@ bugs:
 
 done:
 séparer en différents fichiers
-pause
+touche pause
 vitesse -> vecteur
 fusionner les classes de bullets -> ajout d'un attribut "nice"
 commenter le code
 fct cheat pour debug plus facilement
 Ajout de stats
+freeze tant qu'on appuie pas sur une touche à chaque mort et au début

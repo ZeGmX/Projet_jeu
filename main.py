@@ -10,7 +10,10 @@ import engine, bullets, bad_guys, rockets, shapes, game
 
 def keyboard_cb(key):
     "Gestion du clavier"
+    turtle.setx(0)
+    turtle.sety(0)
     game.Stats.key_pressed += 1
+    game.Game.freeze_spawn = False
     if key == 'Return': #Enter
         game.Game.pause = not game.Game.pause
     if key == 'Escape':
@@ -32,22 +35,22 @@ def cheat():
     if len(sys.argv) > 1 and sys.argv[1] == '0':
         print("Version avec cheat")
         key_order = [(0, 4), (1, 4), (0, 0), (0, 1), (2, 3)]
-        door_order = [(0, 4), (1, 1), (1, 2), (2, 2), (2, 3)]
-        game.Game.posi = 2
-        game.Game.posj = 2
+        door_order = [(0, 4), (1, 2), (1, 1), (2, 2), (2, 3)]
+        game.Game.posi = 0
+        game.Game.posj = 4
         game.Game.rocket.x = 0
         game.Game.rocket.y = 0
-        shapes.Door.doorsopened = 4
-        shapes.Key.pickedupkeys = 4
-        bad_guys.Boss.bossbeaten = True
+        shapes.Door.doorsopened = 0
+        shapes.Key.pickedupkeys = list(range(1))
+        bad_guys.Boss.bossbeaten = False
 
         for door_index in range(shapes.Door.doorsopened):
             i, j = door_order[door_index]
-            (door, x, y) = shapes.Door.ldoor[i][j][0]
+            door= shapes.Door.ldoor[i][j][0]
             engine.del_obj(door)
-            shapes.Door.ldoor[i][j].remove((door, x, y))
-
-        for key_index in range(shapes.Key.pickedupkeys):
+            shapes.Door.ldoor[i][j].remove(door)
+        """
+        for key_index in range(len(shapes.Key.pickedupkeys)):
             i, j = key_order[key_index]
             key = shapes.Key.lkey[i][j][0]
             shapes.Key.lkey[i][j].remove(key)
@@ -55,7 +58,7 @@ def cheat():
                 newi, newj = door_order[shapes.Key.pickedupkeys - 1]
                 shapes.Key.lkey[newi][newj].append(key)
             else:
-                engine.del_obj(key)
+                engine.del_obj(key)""" # TODO ?
     else:
         print("Version sans cheat")
 
@@ -66,8 +69,9 @@ if __name__ == '__main__':
     turtle.penup()
     turtle.speed("fastest")
 
-    shapes.makeshape()
 
+    game.Game.init_game()
+    shapes.makeshape()
     game.Game.init_rockets()
     game.Game.init_ground()
     game.Game.init_boss()
@@ -75,7 +79,8 @@ if __name__ == '__main__':
     engine.init_screen(game.Game.LENGTH, game.Game.LENGTH)
     engine.init_engine()
 
-    shapes.create_doors_keys()
+    shapes.Door.init_doors()
+    shapes.Key.init_keys()
     bad_guys.BadGuy.create_badguys()
 
     engine.add_obj(game.Game.ground)

@@ -1,5 +1,4 @@
-import game
-import math
+import game, math
 import engine, shapes, bad_guys
 
 
@@ -43,7 +42,7 @@ class Rocket(engine.GameObject):
 
     def move(self):
 
-        if not game.Game.pause:
+        if not (game.Game.pause or game.Game.freeze_spawn):
 
             game.gameplay(self)
 
@@ -93,6 +92,7 @@ class Rocket(engine.GameObject):
             self.x = 0
             self.y = 0
             self.skin = Rocket.skin
+            game.Game.freeze_spawn = True
             game.banner("Life lost, {} remaining".format(self.lives))
             if game.Game.posi == 2 and game.Game.posj == 3 and not bad_guys.Boss.bossbeaten:
                 engine.del_obj(game.Game.boss)
@@ -133,7 +133,7 @@ class Rocket(engine.GameObject):
             game.load()
 
         elif Rocket.debuginit < 2:         #Weird problems when first loading
-            for (door , _, _) in shapes.Door.ldoor[game.Game.posi][game.Game.posj]:
+            for door in shapes.Door.ldoor[game.Game.posi][game.Game.posj]:
                 engine.add_obj(door)
             for key in shapes.Key.lkey[game.Game.posi][game.Game.posj]:
                 engine.add_obj(key)
