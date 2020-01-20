@@ -18,6 +18,7 @@ class Rocket(engine.GameObject):
         self.radius = Rocket.radius
         self.landed = False
         self.countdown = 0
+        self.bulletproof = False
         super().__init__(0, 0, 0, 0, Rocket.skin, 'black')
 
     def init_rockets():

@@ -43,6 +43,7 @@ def cheat():
         shapes.Key.pickedupkeys = list(range(4))
         bad_guys.Boss.bossbeaten = False
         doors_opened = 1
+        game.Game.rocket.bulletproof = True
 
         for door_index in range(doors_opened):
             i, j = door_order[door_index]

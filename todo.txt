@@ -8,11 +8,9 @@ ajout d'un tutoriel
 menu au début -> tutoriel/jeu, choix du skin, exit
 musique ?
 trouver un nom pour le jeu
-cheat -> invincibilité
 fuel limité - station de recharge -> idem avec les balles ?
 power ups ?
 afficher le compteur de point en direct, compteur de vie
-réparer la fonction de cheat
 
 
 bugs:
@@ -38,3 +36,4 @@ Ajout de stats
 freeze tant qu'on appuie pas sur une touche à chaque mort et au début
 refaire la fonction gameplay plus efficacement
 stocker les lvls dans un fichiers
+cheat -> invincibilité

@@ -44,7 +44,8 @@ class Bullet(engine.GameObject):
                     game.Stats.points += game.Stats.POINTS_PER_HIT_BOSS
 
             elif shapes.collide_round_round(self, game.Game.rocket): #bad bullets collides with the rocket
-                game.Game.rocket.losealife()
+                if not game.Game.rocket.bulletproof:
+                    game.Game.rocket.losealife()
                 self.shape = 'whitebullet'
                 engine.del_obj(self)
 
