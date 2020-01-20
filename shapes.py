@@ -15,7 +15,7 @@ class Ground(engine.GameObject):
 class Door(engine.GameObject):
     ldoor = []
 
-    doorsopened = 0
+    doorsopened = 0 # TO BE REMOVED - TODO
 
     def __init__(self, x, y, color, keys_required=[], angle=0):
         self.angle = angle

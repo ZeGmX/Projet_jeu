@@ -10,6 +10,9 @@ class Game:
     posj = 0
     length = 0
     height = 0
+    win_posi = 0
+    win_posj = 0
+
 
     pause = False #these have no other initilization
     freeze_spawn = True
@@ -18,18 +21,29 @@ class Game:
     rocket = ""
     boss = ""
 
+    def init_all(level="lvl1"):
+        Game.init_game()
+        shapes.makeshape()
+        Game.init_rockets()
+        Game.init_ground()
+        bad_guys.Boss.init_boss()
+        shapes.Door.init_doors()
+        shapes.Key.init_keys()
+        bad_guys.BadGuy.init_badguys()
+
     def init_game(level="lvl1"):
-        with open("Files/" + level + "/lvl.txt", 'r') as f:
+        path = "Files/" + level + "/lvl.txt"
+        with open(path, 'r') as f:
             lines = f.readlines()
-            assert len(lines) == 3, "Unconsistent file: Files" + level + "/lvl.txt"
+            assert len(lines) == 4, "Unconsistent file: path"
             line_length = lines[0].split()
             line_height = lines[1].split()
             line_spawn = lines[2].split()
-            Game.length = int(line_length[1])
-            Game.height = int(line_height[1])
+            line_win_zone = lines[3].split()
+            Game.length, Game.height = int(line_length[1]), int(line_height[1])
             Game.level = [[[] for _ in range(Game.length)] for _ in range(Game.height)]
-            Game.posi = int(line_spawn[1])
-            Game.posj = int(line_spawn[2])
+            Game.posi, Game.posj = int(line_spawn[1]), int(line_spawn[2])
+            Game.win_posi, Game.win_posj = int(line_win_zone[1]), int(line_win_zone[2])
 
     def init_rockets():
         assert Game.rocket == "", "rocket already initialized"
@@ -42,10 +56,7 @@ class Game:
         Game.ground = shapes.Ground(Game.level[Game.posi][Game.posj])
 
 
-    def init_boss():
-        assert Game.boss == "", "boss already initialized"
-        print("Initializing the Boss...")
-        Game.boss = bad_guys.Boss(30, 0)
+
 
 
 class Stats:
@@ -85,29 +96,21 @@ def gameplay(self):
         door.dooropening()
     for key in shapes.Key.lkey[Game.posi][Game.posj]:
         key.pickupkey()
-    """shapes.Key.pickupkey(0, 4, 0, 0, 4, -268, 0)
-    shapes.Door.dooropening(0, 4, 1, 0, -300, 0)
-    shapes.Key.pickupkey(1, 4, 1, 1, 2, -268, 0)
-    shapes.Door.dooropening(1, 2, 2, 1, -300, 0)
-    shapes.Key.pickupkey(0, 0, 2, 1, 1, 0, 268)
-    shapes.Door.dooropening(1, 1, 3, 2, 0, 300)
-    shapes.Key.pickupkey(0, 1, 3, 2, 2, 268, 0)
-    shapes.Door.dooropening(2, 2, 4, 3, 300, 0)"""
 
     if bad_guys.Boss.bossbeaten == 1:
-        if shapes.Door.ldoor[2][3] != []:
-            door = shapes.Door.ldoor[2][3][0]
-            key = shapes.Key.lkey[2][3][0]
+        if shapes.Door.ldoor[Game.boss.posi][Game.boss.posj] != []:
+            door = shapes.Door.ldoor[Game.boss.posi][Game.boss.posj][0]
+            key = shapes.Key.lkey[Game.boss.posi][Game.boss.posj][0]
             if door.y < 400:
                 door.y += 10
                 key.y += 10
             else:
                 engine.del_obj(door)
                 engine.del_obj(key)
-                shapes.Door.ldoor[2][3].remove(door)
-                shapes.Key.lkey[2][3].remove(key)
+                shapes.Door.ldoor[Game.boss.posi][Game.boss.posj].remove(door)
+                shapes.Key.lkey[Game.boss.posi][Game.boss.posj].remove(key)
 
-    if Game.posi == 2 and Game.posj == 4:
+    if Game.posi == Game.win_posi and Game.posj == Game.win_posj:
         banner('You won!')
         engine.exit_engine()
         Stats.display_stats()

@@ -25,31 +25,42 @@ class BadGuy(engine.GameObject):
                     angle = angle_to_be_added +  math.degrees(math.atan((self.y - game.Game.rocket.y) / (self.x - game.Game.rocket.x)))
                 engine.add_obj(bullets.Bullet(self.x, self.y, angle, False))
 
-    def create_badguys():
-        BadGuy.badguys[1][3].append(BadGuy(-270, -100))
-        BadGuy.badguys[0][3].append(BadGuy(-95, 220))
-        BadGuy.badguys[0][3].append(BadGuy(-95, -250))
-        BadGuy.badguys[0][2].append(BadGuy(-295, 50))
-        BadGuy.badguys[1][4].append(BadGuy(220, -220))
-        BadGuy.badguys[1][4].append(BadGuy(-40, 220))
-        BadGuy.badguys[1][0].append(BadGuy(-220, -160))
-        BadGuy.badguys[1][1].append(BadGuy(-280, 180))
-        BadGuy.badguys[0][0].append(BadGuy(40, 140))
-        BadGuy.badguys[2][0].append(BadGuy(50, -220))
-        BadGuy.badguys[2][0].append(BadGuy(-190, -190))
-        BadGuy.badguys[2][2].append(BadGuy(90, 230))
+    def init_badguys(level="lvl1"):
+        print("Initializing the enemies...")
+        path = "Files/" + level + "/bad_guys.txt"
+        with open(path, 'r') as f:
+            lines = f.readlines()
+            for line in lines[1:-1]: #line[-1] is for the boss
+                split_line = line.split()
+                posi, posj = int(split_line[0]), int(split_line[1])
+                x, y = int(split_line[2]), int(split_line[3])
+                BadGuy.badguys[posi][posj].append(BadGuy(x, y))
 
 
 
 class Boss(engine.GameObject):
     bossbeaten = False
 
-    def __init__(self,x ,y):
+    def __init__(self, posi, posj, x ,y):
         self.countdown = 0
         self.tresh = 70
         self.life = 80
         self.radius = 100
+        self.posi = posi
+        self.posj = posj
         super().__init__(x, y, 0, 0, 'boss', 'black')
+        engine.del_obj(self)
+
+    def init_boss(level="lvl1"):
+        assert game.Game.boss == "", "boss already initialized"
+        print("Initializing the Boss...")
+        path = "Files/" + level + "/bad_guys.txt"
+        with open(path, 'r') as f:
+            lines = f.readlines()
+            boss_line = lines[-1].split()
+            posi, posj = int(boss_line[0]), int(boss_line[1])
+            x, y = int(boss_line[2]), int(boss_line[3])
+            game.Game.boss = Boss(posi, posj, x, y)
 
 
     def move(self):

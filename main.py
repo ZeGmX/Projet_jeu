@@ -36,12 +36,12 @@ def cheat():
         print("Version avec cheat")
         key_order = [(0, 4), (1, 4), (0, 0), (0, 1), (2, 3)]
         door_order = [(0, 4), (1, 2), (1, 1), (2, 2), (2, 3)]
-        game.Game.posi = 0
-        game.Game.posj = 4
+        game.Game.posi = 2
+        game.Game.posj = 2
         game.Game.rocket.x = 0
         game.Game.rocket.y = 0
-        shapes.Door.doorsopened = 0
-        shapes.Key.pickedupkeys = list(range(1))
+        shapes.Door.doorsopened = 4
+        shapes.Key.pickedupkeys = list(range(3))
         bad_guys.Boss.bossbeaten = False
 
         for door_index in range(shapes.Door.doorsopened):
@@ -70,18 +70,19 @@ if __name__ == '__main__':
     turtle.speed("fastest")
 
 
-    game.Game.init_game()
+    """game.Game.init_game()
     shapes.makeshape()
     game.Game.init_rockets()
     game.Game.init_ground()
-    game.Game.init_boss()
+    game.Game.init_boss()"""
 
     engine.init_screen(game.Game.LENGTH, game.Game.LENGTH)
     engine.init_engine()
 
-    shapes.Door.init_doors()
+    game.Game.init_all()
+    """shapes.Door.init_doors()
     shapes.Key.init_keys()
-    bad_guys.BadGuy.create_badguys()
+    bad_guys.BadGuy.create_badguys()"""
 
     engine.add_obj(game.Game.ground)
     engine.add_obj(game.Game.rocket)
