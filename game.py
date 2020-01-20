@@ -81,6 +81,12 @@ class Stats:
         print(f"Doors opened : {shapes.Door.doorsopened}")
         print("*" * 30)
 
+
+
+
+
+
+
 def gameplay(self):
     for door in shapes.Door.ldoor[Game.posi][Game.posj]:
         door.dooropening()

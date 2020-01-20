@@ -1,0 +1,2 @@
+key no_compound
+poly _ _ 13 -13 -13 -13 -13 13 13 13

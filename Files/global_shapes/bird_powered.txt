@@ -1,0 +1,11 @@
+bird_powered
+circle yellow black 0 0 20
+circle white black -15 0 6.66
+circle white black 12 6 6.66
+circle black black 15 6 2
+poly orange black 6.37 -4.3 21 -4.69 19.5 -8.38 4.66 -8.45 2.95 -5.35 2.82 -2.78 5 0 18.76 -0.08 21 -4.69 6.37 -4.3
+poly black black -8 -22 -8 -30
+poly black black -4 -22 -4 -30
+poly black black 0 -22 0 -30
+poly black black 8 -22 8 -30
+poly black black 4 -22 4 -30

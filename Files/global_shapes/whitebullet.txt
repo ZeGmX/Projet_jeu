@@ -1,0 +1,2 @@
+whitebullet
+circle white white 0 0 5

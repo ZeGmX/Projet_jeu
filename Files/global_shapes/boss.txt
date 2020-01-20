@@ -1,0 +1,3 @@
+boss
+circle red red -2 2 100
+circle pink pink -5 5 50

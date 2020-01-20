@@ -40,25 +40,25 @@ def cheat():
         game.Game.posj = 2
         game.Game.rocket.x = 0
         game.Game.rocket.y = 0
-        shapes.Door.doorsopened = 4
-        shapes.Key.pickedupkeys = list(range(3))
+        shapes.Key.pickedupkeys = list(range(4))
         bad_guys.Boss.bossbeaten = False
+        doors_opened = 1
 
-        for door_index in range(shapes.Door.doorsopened):
+        for door_index in range(doors_opened):
             i, j = door_order[door_index]
-            door= shapes.Door.ldoor[i][j][0]
+            door = shapes.Door.ldoor[i][j][0]
             engine.del_obj(door)
             shapes.Door.ldoor[i][j].remove(door)
-        """
-        for key_index in range(len(shapes.Key.pickedupkeys)):
+        for key_index in shapes.Key.pickedupkeys:
             i, j = key_order[key_index]
             key = shapes.Key.lkey[i][j][0]
             shapes.Key.lkey[i][j].remove(key)
-            if key_index == shapes.Key.pickedupkeys - 1 == shapes.Door.doorsopened:
-                newi, newj = door_order[shapes.Key.pickedupkeys - 1]
-                shapes.Key.lkey[newi][newj].append(key)
+            if key_index >= doors_opened:
+                key.x = key.newx
+                key.y = key.newy
+                shapes.Key.lkey[key.newi][key.newj].append(key)
             else:
-                engine.del_obj(key)""" # TODO ?
+                engine.del_obj(key)
     else:
         print("Version sans cheat")
 
@@ -69,20 +69,10 @@ if __name__ == '__main__':
     turtle.penup()
     turtle.speed("fastest")
 
-
-    """game.Game.init_game()
-    shapes.makeshape()
-    game.Game.init_rockets()
-    game.Game.init_ground()
-    game.Game.init_boss()"""
-
     engine.init_screen(game.Game.LENGTH, game.Game.LENGTH)
     engine.init_engine()
 
     game.Game.init_all()
-    """shapes.Door.init_doors()
-    shapes.Key.init_keys()
-    bad_guys.BadGuy.create_badguys()"""
 
     engine.add_obj(game.Game.ground)
     engine.add_obj(game.Game.rocket)

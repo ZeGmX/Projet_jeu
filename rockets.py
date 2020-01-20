@@ -12,7 +12,6 @@ class Rocket(engine.GameObject):
     debuginit = 0
 
     def __init__(self):
-
         self.speed = [0, 0] #v_x, v_y
         self.angle = 90
         self.lives = Rocket.NBLIVES
@@ -33,7 +32,7 @@ class Rocket(engine.GameObject):
         "when the up arrow is pressed"
         self.speed[0] -= Rocket.SPEEDBOOST * math.cos(math.radians(180 - self.angle))
         self.speed[1] -= Rocket.SPEEDBOOST * math.sin(math.radians(180 - self.angle))
-        self.shape = Rocket.skin + " powered"
+        self.shape = Rocket.skin + "_powered"
         self.countdown = 20
         self.landed = False
 
