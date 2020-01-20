@@ -11,6 +11,25 @@ class Ground(engine.GameObject):
         turtle.register_shape('ground', ground)
         super().__init__(0, 0, 0, 0, 'ground', 'black', True) #True beacause static objects
 
+    def init_ground(level="lvl1"):
+        assert game.Game.ground == "", "ground already initialized"
+        print("Initializing the ground...")
+        path = "Files/" + level + "/ground.txt"
+        with open(path, 'r') as f:
+            lines = f.readlines()
+            assert len(lines) % 2 == 0, "Unconsistent file: " + path
+            for i in range(len(lines) // 2):
+                points = lines[2 * i].split()
+                pos = lines[2 * i + 1].split()
+                posi, posj = int(pos[0]), int(pos[1])
+                poly = []
+                assert len(points) % 2 == 0, "Unconsistent file: " + path
+                for j in range(len(points) // 2):
+                    px, py = int(points[2 * j]), int(points[2 * j + 1])
+                    poly.append((px, py))
+                game.Game.level[posi][posj].append(poly)
+        game.Game.ground = Ground(game.Game.level[game.Game.posi][game.Game.posj])
+
 
 class Door(engine.GameObject):
     ldoor = []
@@ -252,7 +271,7 @@ def makeshape():
     key = ((-13, -13), (-13, 13), (13, 13), (13, -13))
     key = tuple((-y, x) for (x, y) in key)
     turtle.register_shape('key', key)
-
+    """
     poly = ((-250,-100), (-214,-194), (-137, -263), (-66, -210), (-26, -255), (39, -213), (72, -152), (152, -152), (236, -115), (261, -21), (228, 19), (272, 102), (263, 197), (200, 262), (113, 241), (79, 262), (30, 259), (-44, 223), (-137, 232), (-202, 261), (-232, 152), (-250, 100),  (-400, 100), (-400, 400), (400, 400), (400, -400), (-400, -400), (-400, -100))
     level[0][4].append(poly)
 
@@ -327,4 +346,4 @@ def makeshape():
     poly = ((400, 400), (400, 100), (250, 100), (132, 205), (63, 291), (-31, 296), (-95, 166), (-200, 200), (-320, 147), (-400, 147), (-400, 400))
     level[2][2].append(poly)
     poly = ((400, -100), (250, -100), (127, -235), (69, -129), (-11, -129), (-98, -219), (-281, -139), (-400, -139), (-400, -400), (400, -400))
-    level[2][2].append(poly)
+    level[2][2].append(poly)"""

@@ -11,6 +11,17 @@ class BadGuy(engine.GameObject):
         self.radius = 20
         super().__init__(x, y, 0, 0, 'badguy', 'black')
 
+    def init_badguys(level="lvl1"):
+        print("Initializing the enemies...")
+        path = "Files/" + level + "/bad_guys.txt"
+        with open(path, 'r') as f:
+            lines = f.readlines()
+            for line in lines[1:-1]: #line[-1] is for the boss
+                split_line = line.split()
+                posi, posj = int(split_line[0]), int(split_line[1])
+                x, y = int(split_line[2]), int(split_line[3])
+                BadGuy.badguys[posi][posj].append(BadGuy(x, y))
+
     def move(self):
         if not game.Game.pause:
             self.countdown += 1
@@ -24,18 +35,6 @@ class BadGuy(engine.GameObject):
                 else:
                     angle = angle_to_be_added +  math.degrees(math.atan((self.y - game.Game.rocket.y) / (self.x - game.Game.rocket.x)))
                 engine.add_obj(bullets.Bullet(self.x, self.y, angle, False))
-
-    def init_badguys(level="lvl1"):
-        print("Initializing the enemies...")
-        path = "Files/" + level + "/bad_guys.txt"
-        with open(path, 'r') as f:
-            lines = f.readlines()
-            for line in lines[1:-1]: #line[-1] is for the boss
-                split_line = line.split()
-                posi, posj = int(split_line[0]), int(split_line[1])
-                x, y = int(split_line[2]), int(split_line[3])
-                BadGuy.badguys[posi][posj].append(BadGuy(x, y))
-
 
 
 class Boss(engine.GameObject):
@@ -61,7 +60,6 @@ class Boss(engine.GameObject):
             posi, posj = int(boss_line[0]), int(boss_line[1])
             x, y = int(boss_line[2]), int(boss_line[3])
             game.Game.boss = Boss(posi, posj, x, y)
-
 
     def move(self):
         if not game.Game.pause:

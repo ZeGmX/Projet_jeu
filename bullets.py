@@ -20,7 +20,6 @@ class Bullet(engine.GameObject):
             self.x += self.speed * math.cos(math.radians(180 - self.angle))
             self.y -= self.speed * math.sin(math.radians(180 - self.angle))
 
-
             if self.nice:
                 for badguy in bad_guys.BadGuy.badguys[game.Game.posi][game.Game.posj]: #collision with a bad_guy
                     if shapes.collide_round_round(self, badguy):
@@ -36,7 +35,7 @@ class Bullet(engine.GameObject):
                     self.shape = 'whitebullet'
                     engine.del_obj(self)
                     bullets.remove(self)
-                    if bad_guys.Boss.bossbeaten == 0 and game.Game.boss.life == 0:
+                    if not bad_guys.Boss.bossbeaten and game.Game.boss.life == 0:
                         engine.del_obj(game.Game.boss)
                         game.banner('Boss defeated')
                         bad_guys.Boss.bossbeaten = 1
@@ -44,13 +43,10 @@ class Bullet(engine.GameObject):
                     game.Stats.bullets_hit += 1
                     game.Stats.points += game.Stats.POINTS_PER_HIT_BOSS
 
-
-
             elif shapes.collide_round_round(self, game.Game.rocket): #bad bullets collides with the rocket
                 game.Game.rocket.losealife()
                 self.shape = 'whitebullet'
                 engine.del_obj(self)
-
 
             if shapes.collide_gnd(self):
                 self.shape = 'whitebullet'

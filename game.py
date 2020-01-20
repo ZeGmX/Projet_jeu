@@ -24,8 +24,8 @@ class Game:
     def init_all(level="lvl1"):
         Game.init_game()
         shapes.makeshape()
-        Game.init_rockets()
-        Game.init_ground()
+        rockets.Rocket.init_rockets()
+        shapes.Ground.init_ground()
         bad_guys.Boss.init_boss()
         shapes.Door.init_doors()
         shapes.Key.init_keys()
@@ -35,7 +35,7 @@ class Game:
         path = "Files/" + level + "/lvl.txt"
         with open(path, 'r') as f:
             lines = f.readlines()
-            assert len(lines) == 4, "Unconsistent file: path"
+            assert len(lines) == 4, "Unconsistent file: " + path
             line_length = lines[0].split()
             line_height = lines[1].split()
             line_spawn = lines[2].split()
@@ -45,15 +45,6 @@ class Game:
             Game.posi, Game.posj = int(line_spawn[1]), int(line_spawn[2])
             Game.win_posi, Game.win_posj = int(line_win_zone[1]), int(line_win_zone[2])
 
-    def init_rockets():
-        assert Game.rocket == "", "rocket already initialized"
-        print("Initializing the rocket...")
-        Game.rocket = rockets.Rocket()
-
-    def init_ground():
-        assert Game.ground == "", "ground already initialized"
-        print("Initializing the ground...")
-        Game.ground = shapes.Ground(Game.level[Game.posi][Game.posj])
 
 
 
@@ -90,14 +81,13 @@ class Stats:
         print(f"Doors opened : {shapes.Door.doorsopened}")
         print("*" * 30)
 
-
 def gameplay(self):
     for door in shapes.Door.ldoor[Game.posi][Game.posj]:
         door.dooropening()
     for key in shapes.Key.lkey[Game.posi][Game.posj]:
         key.pickupkey()
 
-    if bad_guys.Boss.bossbeaten == 1:
+    if bad_guys.Boss.bossbeaten:
         if shapes.Door.ldoor[Game.boss.posi][Game.boss.posj] != []:
             door = shapes.Door.ldoor[Game.boss.posi][Game.boss.posj][0]
             key = shapes.Key.lkey[Game.boss.posi][Game.boss.posj][0]
@@ -120,8 +110,8 @@ def gameplay(self):
 def load():
     engine.del_obj(Game.ground)
     Game.ground = shapes.Ground(Game.level[Game.posi][Game.posj])
-    for i in range(3):
-        for j in range(5):
+    for i in range(Game.height):
+        for j in range(Game.length):
             if i != Game.posi or j != Game.posj:
                 for door in shapes.Door.ldoor[i][j]:
                     engine.del_obj(door)
@@ -142,7 +132,8 @@ def load():
     for key in shapes.Key.lkey[Game.posi][Game.posj]:
         engine.add_obj(key)
 
-    if Game.posi == 2 and Game.posj == 3 and not bad_guys.Boss.bossbeaten and Game.boss.life > 0:
+    if Game.posi == Game.boss.posi and Game.posj == Game.boss.posj and not bad_guys.Boss.bossbeaten:
+        print("hello")
         engine.add_obj(Game.boss)
 
 

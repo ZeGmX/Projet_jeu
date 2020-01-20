@@ -21,6 +21,11 @@ class Rocket(engine.GameObject):
         self.countdown = 0
         super().__init__(0, 0, 0, 0, Rocket.skin, 'black')
 
+    def init_rockets():
+        assert game.Game.rocket == "", "rocket already initialized"
+        print("Initializing the rocket...")
+        game.Game.rocket = Rocket()
+
     def heading(self):
         return self.angle
 
