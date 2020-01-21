@@ -62,24 +62,34 @@ class Rocket(engine.GameObject):
             elif self.speed[0] > 0:
                 self.speed[0] -= Rocket.SPEEDDECREASESTEP
 
-            if self.countdown > 0: #display bac the unpowered skin
+            if self.countdown > 0: #display back the unpowered skin
                 self.countdown -= 1
             else:
                 self.shape = Rocket.skin
 
             if not self.landed:
-                if shapes.collide_gnd(self) or shapes.collide_door(self):
+                if self.can_land():
+                    if abs(self.speed[1]) > 0.8 or  self.angle % 360 != 90:
+                        self.losealife()
+                    else:
+                        self.land()
+                elif shapes.collide_gnd(self) or shapes.collide_door(self):
                     self.losealife()
-                Lplatform = self.canland()
-                for landingpad in Lplatform:
-                    if landingpad > - game.Game.LENGTH and self.y <= landingpad + Rocket.radius:
-                        if abs(self.speed[1]) > 0.8 or self.angle % 360 != 90:
-                            self.losealife()
-                        else:
-                            self.land()
-
             else:
                 self.land()
+
+    def can_land(self):
+        "Checks if there is a platform just under the rocket"
+        for landingpad in game.Game.platforms[game.Game.posi][game.Game.posj]:
+            x1, x2 = landingpad[0][0], landingpad[1][0]
+            y = landingpad[0][1]
+            """first line : the rocket is at the right position vertically
+            second and third : the rocket is at the right position horizontally"""
+            if self.y > y and self.y - self.radius <= y \
+                        and self.x - self.radius >= min(x1, x2) \
+                        and self.x + self.radius <= max(x1, x2):
+                return True
+        return False
 
     def land(self):
         self.speed[1] = self.speed[0] = 0
@@ -105,19 +115,7 @@ class Rocket(engine.GameObject):
             game.Game.posj = 4
             game.load()
 
-    def canland(self):
-        Lplatform = []
-        for poly in game.Game.ground.poly:
-            tempres = False
-            for i in range(len(poly)):
-                x1, y1 = poly[i]
-                x2, y2 = poly[(i + 1) % len(poly)]
-                if y1 == y2 and abs(x2 - x1) == 80 and self.x - Rocket.radius > min(x1, x2) and self.x + Rocket.radius < max(x1, x2) and self.y > y1:
-                    tempres = True
-                    Lplatform.append(y1)
-            if not tempres:
-                Lplatform.append(- game.Game.LENGTH)
-        return Lplatform
+
 
 
     def isoob(self):

@@ -6,13 +6,13 @@ class Game:
     LENGTH = 640 #size of the window
 
     level = [] #these will be initialized using the file Files/lvl{i}/lvl.txt
+    platforms = []
     posi = 0
     posj = 0
     length = 0
     height = 0
     win_posi = 0
     win_posj = 0
-
 
     pause = False #these have no other initilization
     freeze_spawn = True
@@ -26,6 +26,7 @@ class Game:
         shapes.makeshape()
         rockets.Rocket.init_rockets()
         shapes.Ground.init_ground()
+        shapes.Ground.init_platforms()
         bad_guys.Boss.init_boss()
         shapes.Door.init_doors()
         shapes.Key.init_keys()
@@ -114,8 +115,13 @@ def gameplay(self):
 
 
 def load():
+    for bullet in bullets.Bullet.bullet_list:
+        engine.del_obj(bullet)
+    bullets.Bullet.bullet_list = []
+
     engine.del_obj(Game.ground)
     Game.ground = shapes.Ground(Game.level[Game.posi][Game.posj])
+
     for i in range(Game.height):
         for j in range(Game.length):
             if i != Game.posi or j != Game.posj:
@@ -126,23 +132,17 @@ def load():
                 for badguy in bad_guys.BadGuy.badguys[i][j]:
                     engine.del_obj(badguy)
 
-    for bullet in bullets.bullets:
-        engine.del_obj(bullet)
-    bullets.bullets = []
-
     #for _ in range(3):
     for badguy in bad_guys.BadGuy.badguys[Game.posi][Game.posj]:
         engine.add_obj(badguy)
+        badguy.countdown = 0
     for door in shapes.Door.ldoor[Game.posi][Game.posj]:
         engine.add_obj(door)
     for key in shapes.Key.lkey[Game.posi][Game.posj]:
         engine.add_obj(key)
 
     if Game.posi == Game.boss.posi and Game.posj == Game.boss.posj and not bad_guys.Boss.bossbeaten:
-        print("hello")
         engine.add_obj(Game.boss)
-
-
 
 def banner(msg):
     turtle.home()

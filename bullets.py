@@ -1,18 +1,17 @@
 import math
 import engine, game, bad_guys, shapes
 
-bullets = []
 
 
 class Bullet(engine.GameObject):
-    "Bullets shot by ennemies"
+    bullet_list = []
 
     def __init__(self, x, y, angle, nice):
         self.angle = angle
         self.speed = 3
         self.radius = 5
         self.nice = nice #to know if it was fired by the player of a bad guy
-        bullets.append(self)
+        Bullet.bullet_list.append(self)
         super().__init__(x, y, 0, 0, 'graybullet', 'black')
 
     def move(self):
@@ -25,31 +24,28 @@ class Bullet(engine.GameObject):
                     if shapes.collide_round_round(self, badguy):
                         engine.del_obj(badguy)
                         bad_guys.BadGuy.badguys[game.Game.posi][game.Game.posj].remove(badguy)
-                        self.shape = 'whitebullet'
-                        engine.del_obj(self)
-                        bullets.remove(self)
-                        game.Stats.bullets_hit += 1
-                        game.Stats.points += game.Stats.POINTS_PER_BAD_GUY
+                        self.hit(earn_points=True)
 
-                if game.Game.posi == 2 and game.Game.posj == 3 and shapes.collide_round_round(self, game.Game.boss) and not game.Game.boss.bossbeaten:
-                    self.shape = 'whitebullet'
-                    engine.del_obj(self)
-                    bullets.remove(self)
-                    if not bad_guys.Boss.bossbeaten and game.Game.boss.life == 0:
+                if game.Game.posi == game.Game.boss.posi and game.Game.posj == game.Game.boss.posj and shapes.collide_round_round(self, game.Game.boss) and not game.Game.boss.bossbeaten:
+                    self.hit(earn_points=True)
+                    game.Game.boss.life -= 1
+                    if game.Game.boss.life == 0:
                         engine.del_obj(game.Game.boss)
                         game.banner('Boss defeated')
-                        bad_guys.Boss.bossbeaten = 1
-                    game.Game.boss.life -= 1
-                    game.Stats.bullets_hit += 1
-                    game.Stats.points += game.Stats.POINTS_PER_HIT_BOSS
+                        bad_guys.Boss.bossbeaten = True
 
             elif shapes.collide_round_round(self, game.Game.rocket): #bad bullets collides with the rocket
+                self.hit()
                 if not game.Game.rocket.bulletproof:
                     game.Game.rocket.losealife()
-                self.shape = 'whitebullet'
-                engine.del_obj(self)
 
-            if shapes.collide_gnd(self):
-                self.shape = 'whitebullet'
-                engine.del_obj(self)
-                bullets.remove(self)
+            if shapes.collide_gnd(self) or shapes.collide_door(self):
+                self.hit()
+
+    def hit(self, earn_points=False):
+        self.shape = 'whitebullet'
+        engine.del_obj(self)
+        Bullet.bullet_list.remove(self)
+        if earn_points:
+            game.Stats.bullets_hit += 1
+            game.Stats.points += game.Stats.POINTS_PER_BAD_GUY

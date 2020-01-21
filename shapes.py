@@ -13,7 +13,7 @@ class Ground(engine.GameObject):
         super().__init__(0, 0, 0, 0, 'ground', 'black', True) #True beacause static objects
 
     def init_ground(level="lvl1"):
-        assert game.Game.ground == "", "ground already initialized"
+        assert game.Game.ground == "", "Ground already initialized"
         print("Initializing the ground...")
         path = "Files/" + level + "/ground.txt"
         with open(path, 'r') as f:
@@ -31,6 +31,23 @@ class Ground(engine.GameObject):
                 game.Game.level[posi][posj].append(poly)
         game.Game.ground = Ground(game.Game.level[game.Game.posi][game.Game.posj])
 
+    def init_platforms():
+        assert game.Game.platforms == [], "Platforms already initialized"
+        for i in range(game.Game.height):
+            platforms_i = []
+            for j in range(game.Game.length):
+                platforms_i_j = []
+                for poly in game.Game.level[i][j]:
+                    for k in range(len(poly)):
+                        x1, y1 = poly[k]
+                        x2, y2 = poly[k - 1] #[-1] = last element
+                        if y1 == y2 and abs(y1) < game.Game.LENGTH / 2:
+                            """horizontal lines of the ceiling are not a problem
+                            it is taken into account while checking if the landing
+                            is possible (rocket.y + rocket.radius > platform.y)"""
+                            platforms_i_j.append(((x1, y1), (x2, y2)))
+                platforms_i.append(platforms_i_j)
+            game.Game.platforms.append(platforms_i)
 
 class Door(engine.GameObject):
     ldoor = []
@@ -179,10 +196,10 @@ def collide_round_poly(roundobj, poly):
         if x1 == x2:
             x = x1
             y = roundobj.y
-        elif y1 == y2 and abs(x2 - x1) != 80:
+        elif y1 == y2:
             x = roundobj.x
             y = y1
-        elif y2 != y1:
+        else:
             m = (y2 - y1) / (x2 - x1)
             p = y2 - m * x2
             pp = roundobj.y + roundobj.x / m
