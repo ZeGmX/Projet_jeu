@@ -37,3 +37,5 @@ freeze tant qu'on appuie pas sur une touche à chaque mort et au début
 refaire la fonction gameplay plus efficacement
 stocker les lvls dans un fichiers
 cheat -> invincibilité
+
+amélioration des perfs -> calculer le point de collision des balles dès le début au lieu de vérifier en continu

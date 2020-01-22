@@ -9,7 +9,7 @@ import engine, bullets, bad_guys, rockets, shapes, game
 
 
 def keyboard_cb(key):
-    "Gestion du clavier"
+    "keybord manager"
     turtle.setx(0)
     turtle.sety(0)
     game.Stats.key_pressed += 1
@@ -31,7 +31,7 @@ def keyboard_cb(key):
             game.Stats.bullets_fired += 1
 
 def cheat():
-    "Pour un debug plus simple"
+    "For an easier debug"
     if len(sys.argv) > 1 and sys.argv[1] == '0':
         print("Version avec cheat")
         key_order = [(0, 4), (1, 4), (0, 0), (0, 1), (2, 3)]

@@ -1,5 +1,5 @@
-import game, math
-import engine, shapes, bad_guys
+import math, time
+import engine, shapes, bad_guys, game
 
 
 class Rocket(engine.GameObject):
@@ -10,6 +10,9 @@ class Rocket(engine.GameObject):
     skin = 'bird'   #rocket or bird
     radius = 20     #20 for 'bird', 30 for 'rocket
     debuginit = 0
+
+    t = time.time()
+    a = 0
 
     def __init__(self):
         self.speed = [0, 0] #v_x, v_y
@@ -47,8 +50,13 @@ class Rocket(engine.GameObject):
 
     def move(self):
 
-        if not (game.Game.pause or game.Game.freeze_spawn):
+        tp = time.time()
+        if tp > Rocket.t + 1:
+            Rocket.t = tp
+            print(game.Game.rocket.age - Rocket.a)
+            Rocket.a = game.Game.rocket.age
 
+        if not (game.Game.pause or game.Game.freeze_spawn):
             game.gameplay(self)
 
             self.x += self.speed[0]
