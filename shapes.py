@@ -187,26 +187,34 @@ def collide_door(roundobj):
             return True
     return False
 
+def orthogonal_projection(p1, p2, p3):
+    "orthogonal projection of p3 on the line (p1, p2)"
+    """The problem is the same as finding the solution of :
+        [x2 - x1   y1 - y2] [y]   [-c]
+        [y1 - y2   x1 - x2] [x] = [-cp]
+    where (x1 - x1)y + (y1 - y2)x + c = 0 is the equation of (p1, p2)
+    and (y1 - y2)y + (x1 - x2)x  +cp = 0 is the equation of the orthogonal of (p1, p2) containing p3"""
+    x1, y1 = p1
+    x2, y2 = p2
+    x3, y3 = p3
+    det = -(x1 - x2) ** 2 - (y1 - y2) ** 2
+    c = -(x2 - x1) * y2 - (y1 - y2) * x2
+    cp = -(y1 - y2) * y3 - (x1 - x2) * x3
+    y = (- c * (x1 - x2) + cp * (y1 - y2)) / det #Cramer's formula
+    x = (- cp * (x2 - x1) + c * (y1 - y2)) / det
+    return x, y
+
 def collide_round_poly(roundobj, poly):
     "Checks if a round object collides with a polygon"
+    p3 = (roundobj.x, roundobj.y)
     for i in range(len(poly)):
-        x, y = game.Game.LENGTH, game.Game.LENGTH
-        x1, y1 = poly[i]
-        x2, y2 = poly[(i + 1) % len(poly)]
-        if x1 == x2:
-            x = x1
-            y = roundobj.y
-        elif y1 == y2:
-            x = roundobj.x
-            y = y1
-        else:
-            m = (y2 - y1) / (x2 - x1)
-            p = y2 - m * x2
-            pp = roundobj.y + roundobj.x / m
-            x = (pp - p) / (m + 1 / m)
-            y = m * x + p
-        if min(x1, x2) <= x <= max(x1, x2) and min(y1, y2) <= y <= max(y1, y2):
-            if math.sqrt((x - roundobj.x) ** 2 + (y - roundobj.y) ** 2) < roundobj.radius:
+        p1 = poly[i - 1]
+        p2 = poly[i]
+        x1, y1 = p1
+        x2, y2 = p2
+        x, y = orthogonal_projection(p1, p2, p3)
+        if min(x1, x2) <= x <= max(x1, x2) and min(y1, y2) <= y <= max(y1, y2): #the point is on the segment
+            if math.sqrt((x - roundobj.x) ** 2 + (y - roundobj.y) ** 2) < roundobj.radius: #the object is close enough
                 return True
     return False
 
@@ -222,27 +230,26 @@ def makeshape():
         path = "Files/global_shapes/" + file
         with open(path, 'r') as f:
             lines = f.readlines()
-            if len(lines) > 0:
-                l1 = lines[0].split()
-                name = l1[0]
-                shape = turtle.Shape("compound")
-                for line_part in lines[1:]:
-                    line = line_part.split()
-                    color_in = line[1]
-                    color_edge = line[2]
-                    if line[0] == "poly":
-                        poly = []
-                        assert len(line[3:]) % 2 == 0, "Unconsistent file: " + path
-                        for i in range(1, len(line) // 2):
-                            x, y = float(line[2 * i + 1]), float(line[2 * i + 2])
-                            poly.append((x, y))
-                        if "no_compound" in l1: #in order to change the color
-                            shape = tuple(poly)
-                        else:
-                            shape.addcomponent(poly, color_in, color_edge)
-                    elif line[0] == "circle":
-                        x_center, y_center = float(line[3]), float(line[4])
-                        radius = float(line[5])
-                        circle = make_circle((x_center, y_center), radius)
-                        shape.addcomponent(circle, color_in, color_edge)
-                turtle.register_shape(name, shape)
+            l1 = lines[0].split()
+            name = l1[0]
+            shape = turtle.Shape("compound")
+            for line_part in lines[1:]:
+                line = line_part.split()
+                color_in = line[1]
+                color_edge = line[2]
+                if line[0] == "poly":
+                    poly = []
+                    assert len(line[3:]) % 2 == 0, "Unconsistent file: " + path
+                    for i in range(1, len(line) // 2):
+                        x, y = float(line[2 * i + 1]), float(line[2 * i + 2])
+                        poly.append((x, y))
+                    if "no_compound" in l1: #in order to change the color of the shape
+                        shape = tuple(poly)
+                    else:
+                        shape.addcomponent(poly, color_in, color_edge)
+                elif line[0] == "circle":
+                    x_center, y_center = float(line[3]), float(line[4])
+                    radius = float(line[5])
+                    circle = make_circle((x_center, y_center), radius)
+                    shape.addcomponent(circle, color_in, color_edge)
+            turtle.register_shape(name, shape)
