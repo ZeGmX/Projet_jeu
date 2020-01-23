@@ -1,4 +1,4 @@
-import turtle, time
+import turtle, time, sys
 import shapes, bad_guys, rockets, game, engine, bullets
 
 
@@ -62,6 +62,8 @@ class Stats:
     bullets_hit = 0
     key_pressed = 0
     points = 0
+    last_time_registered = time.time() #for the FPS counter
+    last_age_registered = 0
 
     def display_stats():
         Stats.t_end = time.time()
@@ -82,7 +84,14 @@ class Stats:
         print(f"Doors opened : {shapes.Door.doorsopened}")
         print("*" * 30)
 
-
+    def show_fps():
+        if '1' in sys.argv:
+            t = time.time()
+            if t > Stats.last_time_registered + 1:
+                age = Game.rocket.age
+                print(f"FPS : {age - Stats.last_age_registered}")
+                Stats.last_time_registered = t
+                Stats.last_age_registered = age
 
 
 

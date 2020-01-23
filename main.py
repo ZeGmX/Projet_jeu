@@ -32,7 +32,7 @@ def keyboard_cb(key):
 
 def cheat():
     "For an easier debug"
-    if len(sys.argv) > 1 and sys.argv[1] == '0':
+    if '0' in sys.argv:
         print("Version avec cheat")
         key_order = [(0, 4), (1, 4), (0, 0), (0, 1), (2, 3)]
         door_order = [(0, 4), (1, 2), (1, 1), (2, 2), (2, 3)]

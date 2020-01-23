@@ -11,9 +11,6 @@ class Rocket(engine.GameObject):
     radius = 20     #20 for 'bird', 30 for 'rocket
     debuginit = 0
 
-    t = time.time()
-    a = 0
-
     def __init__(self):
         self.speed = [0, 0] #v_x, v_y
         self.angle = 90
@@ -49,13 +46,7 @@ class Rocket(engine.GameObject):
         self.landed = False
 
     def move(self):
-
-        tp = time.time()
-        if tp > Rocket.t + 1:
-            Rocket.t = tp
-            print(game.Game.rocket.age - Rocket.a)
-            Rocket.a = game.Game.rocket.age
-
+        game.Stats.show_fps()
         if not (game.Game.pause or game.Game.freeze_spawn):
             game.gameplay(self)
 
