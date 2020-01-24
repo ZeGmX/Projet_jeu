@@ -40,17 +40,29 @@ class Bullet(engine.GameObject):
                 if not game.Game.rocket.bulletproof:
                     game.Game.rocket.losealife()
 
-            if shapes.collide_gnd(self) or shapes.collide_door(self):
-            #if math.sqrt((self.x - self.pt_coll[0]) ** 2 + (self.y - self.pt_coll[1]) ** 2) <= self.radius or shapes.collide_door(self):
+            #if shapes.collide_gnd(self) or shapes.collide_door(self):
+            if math.sqrt((self.x - self.pt_coll[0]) ** 2 + (self.y - self.pt_coll[1]) ** 2) <= self.radius or shapes.collide_door(self):
                 self.hit()
 
     def hit(self, earn_points=False):
+        "invoked when a bullet hits something and should be removed"
         self.shape = 'whitebullet'
         engine.del_obj(self)
         Bullet.bullet_list.remove(self)
         if earn_points:
             game.Stats.bullets_hit += 1
             game.Stats.points += game.Stats.POINTS_PER_BAD_GUY
+
+    def fire_at_rocket(enemy):
+        "launches a bullet at the rocket"
+        angle_to_be_added = 0   #Computing the direction to fire the bullet
+        if enemy.x < game.Game.rocket.x:
+            angle_to_be_added = 180
+        if enemy.x == game.Game.rocket.x:
+            angle = 0
+        else:
+            angle = angle_to_be_added +  math.degrees(math.atan((enemy.y - game.Game.rocket.y) / (enemy.x - game.Game.rocket.x)))
+        engine.add_obj(Bullet(enemy.x, enemy.y, angle, False))
 
     def collision_point(x, y, angle):
         "Computing the collision point of the bullet \

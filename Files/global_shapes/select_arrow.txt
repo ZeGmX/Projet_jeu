@@ -1,0 +1,2 @@
+select_arrow
+poly red red -15 -20 0 20 15 -20 0 -6

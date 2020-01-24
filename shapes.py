@@ -1,6 +1,6 @@
 import turtle, math
 from os import listdir
-import engine, game, rockets
+import engine, game, rockets, menu
 
 class Ground(engine.GameObject):
     def __init__(self, compounds=[]):
@@ -225,31 +225,39 @@ def collide_gnd(roundobj):
         res = res or collide_round_poly(roundobj, poly)
     return res
 
+def register_shape_from_path(path):
+    with open(path, 'r') as f:
+        lines = f.readlines()
+        l1 = lines[0].split()
+        name = l1[0]
+        shape = turtle.Shape("compound")
+        for line_part in lines[1:]:
+            line = line_part.split()
+            color_in = line[1]
+            color_edge = line[2]
+            if line[0] == "poly":
+                poly = []
+                assert len(line[3:]) % 2 == 0, "Unconsistent file: " + path
+                for i in range(1, len(line) // 2):
+                    x, y = float(line[2 * i + 1]), float(line[2 * i + 2])
+                    poly.append((x, y))
+                if "no_compound" in l1: #in order to change the color of the shape
+                    shape = tuple(poly)
+                else:
+                    shape.addcomponent(poly, color_in, color_edge)
+            elif line[0] == "circle":
+                x_center, y_center = float(line[3]), float(line[4])
+                radius = float(line[5])
+                circle = make_circle((x_center, y_center), radius)
+                shape.addcomponent(circle, color_in, color_edge)
+        turtle.register_shape(name, shape)
+        return name
+
 def makeshape():
     for file in listdir("Files/global_shapes"): #every file in the directory
         path = "Files/global_shapes/" + file
-        with open(path, 'r') as f:
-            lines = f.readlines()
-            l1 = lines[0].split()
-            name = l1[0]
-            shape = turtle.Shape("compound")
-            for line_part in lines[1:]:
-                line = line_part.split()
-                color_in = line[1]
-                color_edge = line[2]
-                if line[0] == "poly":
-                    poly = []
-                    assert len(line[3:]) % 2 == 0, "Unconsistent file: " + path
-                    for i in range(1, len(line) // 2):
-                        x, y = float(line[2 * i + 1]), float(line[2 * i + 2])
-                        poly.append((x, y))
-                    if "no_compound" in l1: #in order to change the color of the shape
-                        shape = tuple(poly)
-                    else:
-                        shape.addcomponent(poly, color_in, color_edge)
-                elif line[0] == "circle":
-                    x_center, y_center = float(line[3]), float(line[4])
-                    radius = float(line[5])
-                    circle = make_circle((x_center, y_center), radius)
-                    shape.addcomponent(circle, color_in, color_edge)
-            turtle.register_shape(name, shape)
+        register_shape_from_path(path)
+    for file in listdir("Files/skins"):
+        path = "Files/skins/" + file
+        name = register_shape_from_path(path)
+        menu.Menu.skin_list.append(name)

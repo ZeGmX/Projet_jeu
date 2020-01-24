@@ -23,7 +23,7 @@ class Game:
 
     def init_all(level="lvl1"):
         Game.init_game()
-        shapes.makeshape()
+        #shapes.makeshape()
         rockets.Rocket.init_rockets()
         shapes.Ground.init_ground()
         shapes.Ground.init_platforms()
@@ -45,6 +45,7 @@ class Game:
             Game.level = [[[] for _ in range(Game.length)] for _ in range(Game.height)]
             Game.posi, Game.posj = int(line_spawn[1]), int(line_spawn[2])
             Game.win_posi, Game.win_posj = int(line_win_zone[1]), int(line_win_zone[2])
+
 
 
 
@@ -159,3 +160,58 @@ def banner(msg):
     turtle.write(msg, True, align='center', font=('Arial', 48, 'italic'))
     time.sleep(1)
     turtle.undo()
+
+def keyboard_cb(key):
+    "keybord manager"
+    turtle.setx(0)
+    turtle.sety(0)
+    game.Stats.key_pressed += 1
+    game.Game.freeze_spawn = False
+    if key == 'Return': #Enter
+        game.Game.pause = not game.Game.pause
+    if key == 'Escape':
+        engine.exit_engine()
+        game.Stats.display_stats()
+    if not game.Game.pause:
+        if key == 'Up' or key == 'z':
+            game.Game.rocket.rocket_up()
+        if key == 'Left' or key == 'q':
+            game.Game.rocket.rocket_left()
+        if key == 'Right' or key == 'd':
+            game.Game.rocket.rocket_right()
+        if key == 'space':
+            engine.add_obj(bullets.Bullet(game.Game.rocket.x, game.Game.rocket.y, 90 + game.Game.rocket.angle, True))
+            game.Stats.bullets_fired += 1
+
+def cheat():
+    "For an easier debug"
+    if '0' in sys.argv:
+        print("Version avec cheat")
+        key_order = [(0, 4), (1, 4), (0, 0), (0, 1), (2, 3)]
+        door_order = [(0, 4), (1, 2), (1, 1), (2, 2), (2, 3)]
+        game.Game.posi = 2
+        game.Game.posj = 2
+        game.Game.rocket.x = 0
+        game.Game.rocket.y = 0
+        shapes.Key.pickedupkeys = list(range(4))
+        bad_guys.Boss.bossbeaten = False
+        doors_opened = 1
+        game.Game.rocket.bulletproof = True
+
+        for door_index in range(doors_opened):
+            i, j = door_order[door_index]
+            door = shapes.Door.ldoor[i][j][0]
+            engine.del_obj(door)
+            shapes.Door.ldoor[i][j].remove(door)
+        for key_index in shapes.Key.pickedupkeys:
+            i, j = key_order[key_index]
+            key = shapes.Key.lkey[i][j][0]
+            shapes.Key.lkey[i][j].remove(key)
+            if key_index >= doors_opened:
+                key.x = key.newx
+                key.y = key.newy
+                shapes.Key.lkey[key.newi][key.newj].append(key)
+            else:
+                engine.del_obj(key)
+    else:
+        print("Version sans cheat")
