@@ -1,0 +1,2 @@
+arrow_right_skin
+poly gray gray -17.3 -10 0 20 17.3 -10

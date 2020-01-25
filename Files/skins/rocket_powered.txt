@@ -1,3 +1,3 @@
-rocket_powered
+rocket_powered 30
 poly white black 15 27 25.61 16.39 25.61 -28.61 0 -7.5 -25.61 -28.61 -25.61 16.39 -15.5 27
 poly orange orange 0 -7.5 3.35 -14.21 0 -20.92 -3.35 -14.21

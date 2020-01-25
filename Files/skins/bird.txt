@@ -1,4 +1,4 @@
-bird
+bird 20
 circle yellow black 0 0 20
 circle white black -15 0 6.66
 circle white black 12 6 6.66

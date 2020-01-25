@@ -230,6 +230,7 @@ def register_shape_from_path(path):
         lines = f.readlines()
         l1 = lines[0].split()
         name = l1[0]
+        shape_radius_maybe = l1[-1] #it is the radius if the file is a skin
         shape = turtle.Shape("compound")
         for line_part in lines[1:]:
             line = line_part.split()
@@ -251,7 +252,7 @@ def register_shape_from_path(path):
                 circle = make_circle((x_center, y_center), radius)
                 shape.addcomponent(circle, color_in, color_edge)
         turtle.register_shape(name, shape)
-        return name
+        return name, shape_radius_maybe
 
 def makeshape():
     for file in listdir("Files/global_shapes"): #every file in the directory
@@ -259,5 +260,7 @@ def makeshape():
         register_shape_from_path(path)
     for file in listdir("Files/skins"):
         path = "Files/skins/" + file
-        name = register_shape_from_path(path)
-        menu.Menu.skin_list.append(name)
+        name, radius = register_shape_from_path(path)
+        if "_powered" not in name:
+            menu.Menu.skin_list.append(name)
+            menu.Menu.skin_radius_list.append(int(radius))
