@@ -2,6 +2,25 @@ import turtle, math
 from os import listdir
 import engine, game, rockets, menu
 
+class Rectangle(engine.GameObject):
+    rect_id = 0
+    rect_done = {}
+
+    def __init__(self, p1, p2, color_in="white", color_edge="black", static=True):
+        "Create a rectangle object with opposite corners p1 and p2"
+        print(Rectangle.rect_id)
+        if (p1, p2) in Rectangle.rect_done:
+            name = Rectangle.rect_done[(p1, p2)]
+        else:
+            shape = turtle.Shape("compound")
+            poly = (p1, (p2[0], p1[1]), p2, (p1[0], p2[1]))
+            shape.addcomponent(poly, color_in, color_edge)
+            name = "rectangle" + str(Rectangle.rect_id)
+            Rectangle.rect_id += 1
+            turtle.register_shape(name, shape)
+        Rectangle.rect_done[(p1, p2)] = name
+        super().__init__(0, 0, 0, 0, name, color_in, static)
+
 class Ground(engine.GameObject):
     def __init__(self, compounds=[]):
         self.poly = compounds

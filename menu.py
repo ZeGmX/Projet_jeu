@@ -1,5 +1,5 @@
 import turtle, time
-import game, engine, rockets
+import game, engine, rockets, shapes
 
 class Menu:
     skin_list = []
@@ -10,8 +10,9 @@ class Menu:
     select_arrow = ""
     current_skin = ""
     current_skin_powered = ""
-    arrow_left = ""
-    arrow_right = ""
+    skin_rect = ""
+    #arrow_left = ""
+    #arrow_right = ""
 
 
     def load_main_menu():
@@ -19,31 +20,35 @@ class Menu:
 
         engine.set_keyboard_handler(Menu.keyboard_main)
         assert Menu.select_arrow == "", "Select arrow already initialized"
-        Menu.select_arrow = engine.GameObject(-80, 70, 0, 0, "select_arrow", "black")
+        Menu.select_arrow = engine.GameObject(-130, 70, 0, 0, "select_arrow", "black")
         engine.add_obj(Menu.select_arrow)
 
         turtle.clear()
-        turtle.setpos(0, 210)
+        turtle.setpos(0, 210)   #options to select
         turtle.write("Name of the game", align="center", font=("Arial", 55, "normal"))
-        turtle.setpos(-50, 50)
+        turtle.setpos(-100, 50)
         turtle.write("Choose a level", font=("Arial", 25, "normal"))
-        turtle.setpos(-50, 0)
+        turtle.setpos(-100, 0)
         turtle.write("Tutorial", font=("Arial", 25, "normal"))
-        turtle.setpos(-50, -50)
+        turtle.setpos(-100, -50)
         turtle.write("Choose a skin", font=("Arial", 25, "normal"))
-        turtle.setpos(-50, -100)
+        turtle.setpos(-100, -100)
         turtle.write("Quit game", font=("Arial", 25, "normal"))
 
         if not Menu.engine_launched:
             Menu.engine_launched = True
             engine.engine()
 
-    def load_skin_selection():
+    def load_skin_selection_menu():
         print("Loading the skin selection menu...")
         engine.init_engine()
         engine.set_keyboard_handler(Menu.keyboard_skin)
-        Menu.arrow_right = engine.GameObject(170, -100, 0, 0, "arrow_right_skin", "gray", True)
-        Menu.arrow_left = engine.GameObject(-170, -100, 0, 0, "arrow_left_skin", "gray", True)
+        #Menu.arrow_right = engine.GameObject(170, -100, 0, 0, "arrow_right_skin", "gray", True)
+        #Menu.arrow_left = engine.GameObject(-170, -100, 0, 0, "arrow_left_skin", "gray", True)
+        _ = engine.GameObject(170, -100, 0, 0, "arrow_right_skin", "gray", True)
+        __ = engine.GameObject(-170, -100, 0, 0, "arrow_left_skin", "gray", True)
+        _ = shapes.Rectangle((60, -150), (-170, 150))
+        Menu.skin_rect = shapes.Rectangle((120, -150), (80, 150))
         Menu.display_skin()
 
     def keyboard_main(key):
@@ -62,7 +67,7 @@ class Menu:
                 engine.set_keyboard_handler(game.keyboard_cb)
                 game.load()
             elif Menu.cursor_position == 2:
-                Menu.load_skin_selection()
+                Menu.load_skin_selection_menu()
             elif Menu.cursor_position == 3:
                 engine.exit_engine()
             else:
@@ -86,6 +91,11 @@ class Menu:
         Menu.current_skin_powered.angle = 180
         engine.add_obj(Menu.current_skin)
 
+        Menu.skin_rect.draw()
+        turtle.setpos(0, -112)
+        turtle.pencolor("black")
+        turtle.write(Menu.skin_list[Menu.skin_cursor], align="center", font=("Arial", 15, "normal"))
+
 
     def keyboard_skin(key):
         "keyboard manager for the skin selection"
@@ -100,7 +110,9 @@ class Menu:
             rockets.Rocket.radius = Menu.skin_radius_list[Menu.skin_cursor]
             engine.del_obj(Menu.current_skin)
             engine.del_obj(Menu.current_skin_powered)
-            engine.del_obj(Menu.arrow_right)
-            engine.del_obj(Menu.arrow_left)
-            Menu.current_skin = Menu.current_skin_powered = Menu.arrow_right = Menu.arrow_left = ""
+            #engine.del_obj(Menu.arrow_right)
+            #engine.del_obj(Menu.arrow_left)
+            engine.del_obj(Menu.skin_rect)
+            #Menu.current_skin = Menu.current_skin_powered = Menu.arrow_right = Menu.arrow_left = Menu.skin_rect = ""
+            Menu.current_skin = Menu.current_skin_powered = Menu.skin_rect = ""
             Menu.load_main_menu()
