@@ -19,6 +19,7 @@ refaire la fonction collide_door -> utiliser collide_round_poly
 bugs:
   pb de passages entre 1,3 et 1,4 en bas -> changer les points
   |-> idem entre 0,2 et 1,2 à gauche
+  boss couldown pas réinitialisé
 
 
 
