@@ -1,6 +1,6 @@
 # A nice game.Game
 import turtle
-import engine, game, menu, shapes
+import engine, menu, game, shapes
 
 
 if __name__ == '__main__':
@@ -11,7 +11,7 @@ if __name__ == '__main__':
 
     engine.init_screen(game.Game.LENGTH, game.Game.LENGTH)
     engine.init_engine()
-    
+
 
     shapes.makeshape()
     menu.Menu.load_main_menu()
