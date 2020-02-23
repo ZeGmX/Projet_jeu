@@ -11,7 +11,7 @@ class Menu:
     engine_launched = False
     MAX_NB_LVL_PER_PAGE = min(10, len(listdir("Files/lvls/")) + 1)
     LINE_HEIGHT = 50
-    LEVEL_LINE_HEIGHT = 0.08 * game.Game.LENGTH
+    LEVEL_LINE_HEIGHT = 0.08 * game.Game.LENGTH #to have the list cover 80% of the height
     FONT_SIZE = LINE_HEIGHT // 2
     SKIN_WINDOW_HEIGHT = game.Game.LENGTH / 2
     select_arrow = ""
@@ -65,7 +65,7 @@ class Menu:
 
     def load_level_selection_menu():
         print("Loading the level selection menu...")
-        pos_arrow = - game.Game.LENGTH // 5, 3.5 * Menu.LEVEL_LINE_HEIGHT #to have the menu cover 80% of the height
+        pos_arrow = - game.Game.LENGTH // 5, 3 * Menu.LEVEL_LINE_HEIGHT + Menu.FONT_SIZE
         rect_p1 = game.Game.LENGTH // 2, game.Game.LENGTH // 2
         rect_p2 = - game.Game.LENGTH // 2, - game.Game.LENGTH // 2
 
@@ -161,7 +161,7 @@ class Menu:
     def keyboard_lvl(key):
         "keyboard manager for the level selection menu"
         total_lvl_number = len(listdir("Files/lvls/"))
-        y0 = 4.5 * Menu.LEVEL_LINE_HEIGHT #4.5 because there are maximum 5 lines on the upper part
+        y0 = 4 * Menu.LEVEL_LINE_HEIGHT + Menu.FONT_SIZE
 
         if key == "Up":
             if Menu.cursor_position_on_screen > 0:

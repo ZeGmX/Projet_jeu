@@ -5,7 +5,7 @@ stocker le posi posj d'avant pour load plus efficacement
 ajout de déco
 ajout de lore
 ajout d'un tutoriel
-menu au début -> tutoriel/jeu, choix du skin, exit
+menu au début -> tutoriel
 musique ?
 trouver un nom pour le jeu
 fuel limité - station de recharge -> idem avec les balles ?
