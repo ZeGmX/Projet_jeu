@@ -1,0 +1,4 @@
+length: 5
+height: 3
+spawn: 0 4
+win_zone: 2 4
