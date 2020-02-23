@@ -1,6 +1,0 @@
-posi posj x y color key_id newi newj newx newy
-0 4 100 -138 blue 0 0 4 -268 0
-1 4 270 105 green 1 1 2 -268 0
-0 0 150 -49 orange 2 1 1 0 268
-0 1 -120 163 red 3 2 2 268 0
-2 3 268 0 gold 4 2 3 268 0

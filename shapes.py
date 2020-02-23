@@ -8,7 +8,7 @@ class Rectangle(engine.GameObject):
 
     def __init__(self, p1, p2, color_in="white", color_edge="black", static=True):
         "Create a rectangle object with opposite corners p1 and p2"
-        print(Rectangle.rect_id)
+        #print(Rectangle.rect_id)
         if (p1, p2) in Rectangle.rect_done:
             name = Rectangle.rect_done[(p1, p2)]
         else:
@@ -34,7 +34,7 @@ class Ground(engine.GameObject):
     def init_ground(level="lvl1"):
         assert game.Game.ground == "", "Ground already initialized"
         print("Initializing the ground...")
-        path = "Files/" + level + "/ground.txt"
+        path = "Files/lvls/" + level + "/ground.txt"
         with open(path, 'r') as f:
             lines = f.readlines()
             assert len(lines) % 2 == 0, "Unconsistent file: " + path
@@ -110,7 +110,7 @@ class Door(engine.GameObject):
     def init_doors(level="lvl1"):
         print("Initializing the doors...")
         Door.ldoor = [[[] for _ in range(game.Game.length)] for _ in range(game.Game.height)]
-        path = "Files/" + level + "/doors.txt"
+        path = "Files/lvls/" + level + "/doors.txt"
         with open(path, 'r') as f:
             lines = f.readlines()
             Door.nb_doors = len(lines) - 1
@@ -145,7 +145,7 @@ class Key(engine.GameObject):
     def init_keys(level="lvl1"):
         print("Initializing the keys...")
         Key.lkey = [[[] for _ in range(game.Game.length)] for _ in range(game.Game.height)]
-        path = "Files/" + level + "/keys.txt"
+        path = "Files/lvls/" + level + "/keys.txt"
         with open(path, 'r') as f:
             lines = f.readlines()
             for line in lines[1:]:

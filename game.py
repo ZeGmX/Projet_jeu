@@ -25,15 +25,15 @@ class Game:
         Game.init_game()
         #shapes.makeshape()
         rockets.Rocket.init_rockets()
-        shapes.Ground.init_ground()
+        shapes.Ground.init_ground(level)
         shapes.Ground.init_platforms()
-        bad_guys.Boss.init_boss()
-        shapes.Door.init_doors()
-        shapes.Key.init_keys()
-        bad_guys.BadGuy.init_badguys()
+        bad_guys.Boss.init_boss(level)
+        shapes.Door.init_doors(level)
+        shapes.Key.init_keys(level)
+        bad_guys.BadGuy.init_badguys(level)
 
     def init_game(level="lvl1"):
-        path = "Files/" + level + "/lvl.txt"
+        path = "Files/lvls/" + level + "/lvl.txt"
         with open(path, 'r') as f:
             lines = f.readlines()
             assert len(lines) == 4, "Unconsistent file: " + path

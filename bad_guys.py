@@ -13,7 +13,7 @@ class BadGuy(engine.GameObject):
 
     def init_badguys(level="lvl1"):
         print("Initializing the enemies...")
-        path = "Files/" + level + "/bad_guys.txt"
+        path = "Files/lvls/" + level + "/bad_guys.txt"
         with open(path, 'r') as f:
             lines = f.readlines()
             for line in lines[1:-1]: #line[-1] is for the boss
@@ -46,7 +46,7 @@ class Boss(engine.GameObject):
     def init_boss(level="lvl1"):
         assert game.Game.boss == "", "boss already initialized"
         print("Initializing the Boss...")
-        path = "Files/" + level + "/bad_guys.txt"
+        path = "Files/lvls/" + level + "/bad_guys.txt"
         with open(path, 'r') as f:
             lines = f.readlines()
             boss_line = lines[-1].split()
