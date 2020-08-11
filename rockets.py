@@ -1,5 +1,8 @@
-import math, time
-import engine, shapes, bad_guys, game
+import math
+import engine
+import shapes
+import bad_guys
+import game
 
 
 class Rocket(engine.GameObject):
@@ -7,12 +10,12 @@ class Rocket(engine.GameObject):
     SPEEDDECREASESTEP = 0.02
     GRAVITYSTEP = 0.02
     NBLIVES = 3
-    skin = 'bird'   #rocket or bird
-    radius = 20     #20 for 'bird', 30 for 'rocket
+    skin = 'bird'  # rocket or bird
+    radius = 20  # 20 for 'bird', 30 for 'rocket
     debuginit = 0
 
     def __init__(self):
-        self.speed = [0, 0] #v_x, v_y
+        self.speed = [0, 0]  # v_x, v_y
         self.angle = 90
         self.lives = Rocket.NBLIVES
         self.radius = Rocket.radius
@@ -21,8 +24,9 @@ class Rocket(engine.GameObject):
         self.bulletproof = False
         super().__init__(0, 0, 0, 0, Rocket.skin, 'black')
 
+    @staticmethod
     def init_rockets():
-        assert game.Game.rocket == "", "rocket already initialized"
+        assert game.Game.rocket is None, "rocket already initialized"
         print("Initializing the rocket...")
         game.Game.rocket = Rocket()
 
@@ -30,7 +34,7 @@ class Rocket(engine.GameObject):
         return self.angle
 
     def rocket_up(self):
-        "when the up arrow is pressed"
+        """when the up arrow is pressed"""
         self.speed[0] -= Rocket.SPEEDBOOST * math.cos(math.radians(180 - self.angle))
         self.speed[1] -= Rocket.SPEEDBOOST * math.sin(math.radians(180 - self.angle))
         self.shape = Rocket.skin + "_powered"
@@ -54,21 +58,21 @@ class Rocket(engine.GameObject):
             self.y -= self.speed[1]
             self.speed[1] += Rocket.GRAVITYSTEP
 
-            if self.speed[1] < 0:  #Natural slowing down - friction
+            if self.speed[1] < 0:  # Natural slowing down - friction
                 self.speed[1] += Rocket.SPEEDDECREASESTEP / 2
             if self.speed[0] < 0:
-                self.speed[0] += Rocket.SPEEDDECREASESTEP  #less friction horizontally
+                self.speed[0] += Rocket.SPEEDDECREASESTEP  # less friction horizontally
             elif self.speed[0] > 0:
                 self.speed[0] -= Rocket.SPEEDDECREASESTEP
 
-            if self.countdown > 0: #display back the unpowered skin
+            if self.countdown > 0:  # display back the unpowered skin
                 self.countdown -= 1
             else:
                 self.shape = Rocket.skin
 
             if not self.landed:
                 if self.can_land():
-                    if abs(self.speed[1]) > 0.8 or  self.angle % 360 != 90:
+                    if abs(self.speed[1]) > 0.8 or self.angle % 360 != 90:
                         self.losealife()
                     else:
                         self.land()
@@ -78,15 +82,14 @@ class Rocket(engine.GameObject):
                 self.land()
 
     def can_land(self):
-        "Checks if there is a platform just under the rocket"
+        """Checks if there is a platform just under the rocket"""
         for landingpad in game.Game.platforms[game.Game.posi][game.Game.posj]:
             x1, x2 = landingpad[0][0], landingpad[1][0]
             y = landingpad[0][1]
             """first line : the rocket is at the right position vertically
             second and third : the rocket is at the right position horizontally"""
-            if self.y > y and self.y - self.radius <= y \
-                        and self.x - self.radius >= min(x1, x2) \
-                        and self.x + self.radius <= max(x1, x2):
+            if self.y > y >= self.y - self.radius and self.x - self.radius >= min(x1, x2) and \
+                    self.x + self.radius <= max(x1, x2):
                 return True
         return False
 
@@ -114,11 +117,8 @@ class Rocket(engine.GameObject):
             game.Game.posj = 4
             game.load()
 
-
-
-
     def isoob(self):
-        "out of bond management"
+        """out of bond management"""
         if super().isoob():
             if self.y < -300:
                 game.Game.posi += 1
@@ -134,7 +134,7 @@ class Rocket(engine.GameObject):
                 self.x = -280
             game.load()
 
-        elif Rocket.debuginit < 2:         #Weird problems when first loading
+        elif Rocket.debuginit < 2:  # Weird problems when first loading
             for door in shapes.Door.ldoor[game.Game.posi][game.Game.posj]:
                 engine.add_obj(door)
             for key in shapes.Key.lkey[game.Game.posi][game.Game.posj]:

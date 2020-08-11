@@ -1,11 +1,17 @@
-import turtle, time, sys
-import shapes, bad_guys, rockets, game, engine, bullets
+import turtle
+import time
+import sys
+import shapes
+import bad_guys
+import rockets
+import engine
+import bullets
 
 
 class Game:
-    LENGTH = 640 #size of the window
+    LENGTH = 640  # size of the window
 
-    level = [] #these will be initialized using the file Files/lvl{i}/lvl.txt
+    level = []  # these will be initialized using the file Files/lvl{i}/lvl.txt
     platforms = []
     posi = 0
     posj = 0
@@ -14,16 +20,16 @@ class Game:
     win_posi = 0
     win_posj = 0
 
-    pause = False #these have no other initilization
+    pause = False  # these have no other initialization
     freeze_spawn = True
 
-    ground = "" #these have their own initialization function
-    rocket = ""
-    boss = ""
+    ground = None  # these have their own initialization function
+    rocket = None
+    boss = None
 
+    @staticmethod
     def init_all(level="lvl1"):
         Game.init_game()
-        #shapes.makeshape()
         rockets.Rocket.init_rockets()
         shapes.Ground.init_ground(level)
         shapes.Ground.init_platforms()
@@ -32,11 +38,12 @@ class Game:
         shapes.Key.init_keys(level)
         bad_guys.BadGuy.init_badguys(level)
 
+    @staticmethod
     def init_game(level="lvl1"):
         path = "Files/lvls/" + level + "/lvl.txt"
         with open(path, 'r') as f:
             lines = f.readlines()
-            assert len(lines) == 4, "Unconsistent file: " + path
+            assert len(lines) == 4, "Inconsistent file: " + path
             line_length = lines[0].split()
             line_height = lines[1].split()
             line_spawn = lines[2].split()
@@ -45,11 +52,6 @@ class Game:
             Game.level = [[[] for _ in range(Game.length)] for _ in range(Game.height)]
             Game.posi, Game.posj = int(line_spawn[1]), int(line_spawn[2])
             Game.win_posi, Game.win_posj = int(line_win_zone[1]), int(line_win_zone[2])
-
-
-
-
-
 
 
 class Stats:
@@ -63,9 +65,10 @@ class Stats:
     bullets_hit = 0
     key_pressed = 0
     points = 0
-    last_time_registered = time.time() #for the FPS counter
+    last_time_registered = time.time()  # for the FPS counter
     last_age_registered = 0
 
+    @staticmethod
     def display_stats():
         Stats.t_end = time.time()
         dt = int(Stats.t_end - Stats.t_init)
@@ -77,14 +80,16 @@ class Stats:
         print(f"Points : {Stats.points}")
         print(f"Time played : {hours}h {mins}min {seconds}s")
         print(f"Bullets fired : {Stats.bullets_fired}")
-        print(f"Buletts hit : {Stats.bullets_hit}")
-        print("Accuracy : {}%".format(Stats.bullets_hit / Stats.bullets_fired * 100 if Stats.bullets_fired > 0 else "NaN"))
+        print(f"Bullets hit : {Stats.bullets_hit}")
+        print("Accuracy : {}%".format(Stats.bullets_hit / Stats.bullets_fired * 100
+                                      if Stats.bullets_fired > 0 else "NaN"))
         print(f"Number of keys pressed : {Stats.key_pressed}")
         print(f"Lives left : {Game.rocket.lives}")
         print(f"Keys picked : {len(shapes.Key.pickedupkeys)}")
         print(f"Doors opened : {shapes.Door.doorsopened}")
         print("*" * 30)
 
+    @staticmethod
     def show_fps():
         if '1' in sys.argv:
             t = time.time()
@@ -93,9 +98,6 @@ class Stats:
                 print(f"FPS : {age - Stats.last_age_registered}")
                 Stats.last_time_registered = t
                 Stats.last_age_registered = age
-
-
-
 
 
 def gameplay(self):
@@ -121,7 +123,6 @@ def gameplay(self):
         banner('You won!')
         engine.exit_engine()
         Stats.display_stats()
-
 
 
 def load():
@@ -154,6 +155,7 @@ def load():
     if Game.posi == Game.boss.posi and Game.posj == Game.boss.posj and not bad_guys.Boss.bossbeaten:
         engine.add_obj(Game.boss)
 
+
 def banner(msg):
     turtle.home()
     turtle.color('darkblue')
@@ -161,42 +163,44 @@ def banner(msg):
     time.sleep(1)
     turtle.undo()
 
+
 def keyboard_cb(key):
-    "keybord manager"
+    """keyboard manager"""
     turtle.setx(0)
     turtle.sety(0)
-    game.Stats.key_pressed += 1
-    game.Game.freeze_spawn = False
-    if key == 'Return': #Enter
-        game.Game.pause = not game.Game.pause
+    Stats.key_pressed += 1
+    Game.freeze_spawn = False
+    if key == 'Return':  # Enter
+        Game.pause = not Game.pause
     if key == 'Escape':
         engine.exit_engine()
-        game.Stats.display_stats()
-    if not game.Game.pause:
+        Stats.display_stats()
+    if not Game.pause:
         if key == 'Up' or key == 'z':
-            game.Game.rocket.rocket_up()
+            Game.rocket.rocket_up()
         if key == 'Left' or key == 'q':
-            game.Game.rocket.rocket_left()
+            Game.rocket.rocket_left()
         if key == 'Right' or key == 'd':
-            game.Game.rocket.rocket_right()
+            Game.rocket.rocket_right()
         if key == 'space':
-            engine.add_obj(bullets.Bullet(game.Game.rocket.x, game.Game.rocket.y, 90 + game.Game.rocket.angle, True))
-            game.Stats.bullets_fired += 1
+            engine.add_obj(bullets.Bullet(Game.rocket.x, Game.rocket.y, 90 + Game.rocket.angle, True))
+            Stats.bullets_fired += 1
+
 
 def cheat():
-    "For an easier debug"
+    """For an easier debug"""
     if '0' in sys.argv:
-        print("Version avec cheat")
+        print("cheat version")
         key_order = [(0, 4), (1, 4), (0, 0), (0, 1), (2, 3)]
         door_order = [(0, 4), (1, 2), (1, 1), (2, 2), (2, 3)]
-        game.Game.posi = 2
-        game.Game.posj = 2
-        game.Game.rocket.x = 0
-        game.Game.rocket.y = 0
+        Game.posi = 2
+        Game.posj = 2
+        Game.rocket.x = 0
+        Game.rocket.y = 0
         shapes.Key.pickedupkeys = list(range(4))
         bad_guys.Boss.bossbeaten = False
         doors_opened = 1
-        game.Game.rocket.bulletproof = True
+        Game.rocket.bulletproof = True
 
         for door_index in range(doors_opened):
             i, j = door_order[door_index]

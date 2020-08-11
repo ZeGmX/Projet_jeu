@@ -1,20 +1,22 @@
 # A nice game.Game
 import turtle
-import engine, menu, game, shapes
+import engine
+from menu import Menu
+import game
+import shapes
 
 
 if __name__ == '__main__':
 
-    turtle.hideturtle() #These three lines are hiding the drawing at the begining
+    turtle.hideturtle()  # These three lines are hiding the drawing at the beginning
     turtle.penup()
     turtle.speed("fastest")
 
     engine.init_screen(game.Game.LENGTH, game.Game.LENGTH)
     engine.init_engine()
 
-
     shapes.makeshape()
-    menu.Menu.load_main_menu()
+    Menu.load_main_menu()
     """
     game.Game.init_all()
 

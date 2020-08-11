@@ -1,22 +1,25 @@
-import math, random
-import engine, bullets, game
+import random
+import engine
+import bullets
+import game
 
 
 class BadGuy(engine.GameObject):
-    badguys = [[[] for _ in range(5)] for _ in range(3)] #badguys in each room
+    badguys = [[[] for _ in range(5)] for _ in range(3)]  # badguys in each room
 
-    def __init__(self,x ,y):
+    def __init__(self, x, y):
         self.countdown = 0
-        self.tresh = 150 # when countdown > tresh, it fires a bullet
+        self.tresh = 150  # when countdown > tresh, it fires a bullet
         self.radius = 20
         super().__init__(x, y, 0, 0, 'badguy', 'black')
 
+    @staticmethod
     def init_badguys(level="lvl1"):
         print("Initializing the enemies...")
         path = "Files/lvls/" + level + "/bad_guys.txt"
         with open(path, 'r') as f:
             lines = f.readlines()
-            for line in lines[1:-1]: #line[-1] is for the boss
+            for line in lines[1:-1]:  # line[-1] is for the boss
                 split_line = line.split()
                 posi, posj = int(split_line[0]), int(split_line[1])
                 x, y = int(split_line[2]), int(split_line[3])
@@ -33,7 +36,7 @@ class BadGuy(engine.GameObject):
 class Boss(engine.GameObject):
     bossbeaten = False
 
-    def __init__(self, posi, posj, x ,y):
+    def __init__(self, posi, posj, x, y):
         self.countdown = 0
         self.tresh = 70
         self.life = 80
@@ -43,8 +46,9 @@ class Boss(engine.GameObject):
         super().__init__(x, y, 0, 0, 'boss', 'black')
         engine.del_obj(self)
 
+    @staticmethod
     def init_boss(level="lvl1"):
-        assert game.Game.boss == "", "boss already initialized"
+        assert game.Game.boss is None, "boss already initialized"
         print("Initializing the Boss...")
         path = "Files/lvls/" + level + "/bad_guys.txt"
         with open(path, 'r') as f:
